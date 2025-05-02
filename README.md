@@ -2,6 +2,7 @@
 
 ## Deskripsi
 Tetap Semangat
+1. Uray (Hadir)
 
 ## Prasyarat
 Sebelum memulai, pastikan memiliki hal-hal berikut:
