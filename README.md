@@ -5,6 +5,7 @@ Tetap Semangat
 1. Uray (Hadir)
 2. Jauhari (Hadir)
 3. Amelia (Hadir)
+4. Lindra (Hadir)
 
 ## Prasyarat
 Sebelum memulai, pastikan memiliki hal-hal berikut:
