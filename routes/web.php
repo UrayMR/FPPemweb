@@ -4,6 +4,7 @@ require_once __DIR__ . '/../core/Router.php';
 require_once __DIR__ . '/../app/Controllers/AuthController.php';
 require_once __DIR__ . '/../app/Controllers/AdminController.php';
 require_once __DIR__ . '/../app/Controllers/MandorController.php';
+require_once __DIR__ . '/../app/Controllers/admin/KaryawanController.php';
 require_once __DIR__ . '/../core/Middleware.php';
 
 // Route untuk login dan logout
@@ -37,6 +38,11 @@ Router::get('/', function () {
 Router::get('/admin/dashboard', function () {
   Middleware::role('admin'); // hanya admin yang bisa akses
   AdminController::dashboard();
+});
+
+Router::get('/admin/karyawan', function () {
+  Middleware::role('admin'); // hanya admin yang bisa akses
+  KaryawanController::index();
 });
 
 Router::get('/mandor/dashboard', function () {

@@ -9,13 +9,6 @@ class User
     return Connection::getInstance();
   }
 
-  public static function findByEmail($email)
-  {
-    $stmt = self::db()->prepare("SELECT * FROM users WHERE email = ?");
-    $stmt->execute([$email]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-  }
-
   public static function findByCredentials($username, $phone)
   {
     $stmt = self::db()->prepare("SELECT * FROM users WHERE username = ? AND phone_number = ?");

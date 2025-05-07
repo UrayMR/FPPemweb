@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Models/User.php';
+require_once __DIR__ . '/../../core/auth.php';
 
 class AuthController
 {
@@ -11,26 +12,25 @@ class AuthController
 
   public static function login()
   {
-    $user = User::findByEmail($_POST['username']);
-    if ($user && $_POST['phone_number'] === $user['phone_number']) { // NOTE: gunakan password_hash di produksi
-      $_SESSION['user'] = [
-        'id' => $user['id'],
-        'username' => $user['username'],
-        'role' => $user['role'],
-      ];
-      if ($user['role'] === 'admin') {
-        redirect('/admin/dashboard');
-      } else {
-        redirect('/mandor/dashboard');
-      }
-    } else {
-      redirect('/login?error=Invalid credentials');
+    $username = $_POST['username'];
+    $phone_number = $_POST['phone_number'];
+
+
+    $user = User::findByCredentials($username, $phone_number);
+    if ($user) {
+      login($user);
+      redirect('/');
+      exit;
     }
+
+    $_SESSION['error'] = 'Login gagal. Periksa data Anda.';
+    redirect('/login');
+    exit;
   }
 
   public static function logout()
   {
-    session_destroy();
+    logout();
     redirect('/login');
   }
 }
