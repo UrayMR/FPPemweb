@@ -7,10 +7,10 @@ class Connection
 
   private function __construct()
   {
-    $host = 'localhost';
-    $dbname = 'crud_native';
-    $user = 'root';
-    $pass = '';
+    $host = $_ENV['DB_HOST'];
+    $dbname = $_ENV['DB_NAME'];
+    $user = $_ENV['DB_USER'];
+    $pass = $_ENV['DB_PASS'];
 
     try {
       $this->pdo = new PDO("mysql:host=$host;dbname=$dbname", $user, $pass);

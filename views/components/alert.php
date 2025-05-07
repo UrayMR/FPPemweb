@@ -1,6 +1,13 @@
-<?php if (!empty($_GET['success'])): ?>
-  <div class="alert alert-success"><?= htmlspecialchars($_GET['success']) ?></div>
+<?php if (!empty($_SESSION['success'])): ?>
+  <div class="alert alert-success">
+    <?= htmlspecialchars($_SESSION['success']) ?>
+  </div>
+  <?php unset($_SESSION['success']); ?>
 <?php endif; ?>
-<?php if (!empty($_GET['error'])): ?>
-  <div class="alert alert-danger"><?= htmlspecialchars($_GET['error']) ?></div>
+
+<?php if (!empty($_SESSION['error'])): ?>
+  <div class="alert alert-danger">
+    <?= htmlspecialchars($_SESSION['error']) ?>
+  </div>
+  <?php unset($_SESSION['error']); ?>
 <?php endif; ?>
