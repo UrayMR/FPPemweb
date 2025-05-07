@@ -7,13 +7,13 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/dashboard') ? 'active' : '' ?>" href="/admin/dashboard">Dashboard</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/admin/karyawan">Karyawan</a>
+          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/karyawan') ? 'active' : '' ?>" href="/admin/karyawan">Karyawan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Proyek</a>
+          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/proyek') ? 'active' : '' ?>" href="/admin/proyek">Proyek</a>
         </li>
       </ul>
       <div class="d-flex gap-3">
