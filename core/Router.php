@@ -16,14 +16,22 @@ class Router
 
   public static function dispatch($uri)
   {
-    $uri = strtok($uri, '?');
+    $uri = strtok($uri, '?'); // Hilangkan query string
     $method = $_SERVER['REQUEST_METHOD'];
 
-    if (isset(self::$routes[$method][$uri])) {
-      call_user_func(self::$routes[$method][$uri]);
-    } else {
-      http_response_code(404);
-      echo "404 Not Found";
+    foreach (self::$routes[$method] as $route => $callback) {
+      // Cek apakah rute memiliki parameter dinamis
+      $pattern = preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_-]+)', $route);
+      $pattern = "#^" . $pattern . "$#";
+
+      if (preg_match($pattern, $uri, $matches)) {
+        array_shift($matches); // Hapus elemen pertama (path penuh)
+        return call_user_func_array($callback, $matches);
+      }
     }
+
+    // Jika tidak ada rute yang cocok
+    http_response_code(404);
+    echo "404 Not Found";
   }
 }

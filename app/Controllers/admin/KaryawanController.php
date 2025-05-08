@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../../Models/User.php';
+require_once __DIR__ . '/../../../core/Helpers.php';
 
 class KaryawanController
 {
@@ -23,65 +24,109 @@ class KaryawanController
     ]);
   }
 
-  public static function create()
-  {
-    view('pages/admin/karyawan/create');
-  }
-
   public static function store()
   {
-    $user = new User();
+    $rules = [
+      'username' => 'string',
+      'phone_number' => 'numeric',
+    ];
+
+    validate($_POST, $rules);
+
     $data = [
       'username' => $_POST['username'],
       'phone_number' => $_POST['phone_number'],
-      'role' => 'mandor',
+      'role' => $_POST['role'],
     ];
 
-    $user->create($data);
-    redirect('/admin/karyawan?success=Karyawan berhasil ditambahkan');
-  }
-
-  public static function edit($id)
-  {
     $user = new User();
-    $mandor = $user->find($id);
+    $user->create($data);
 
-    if (!$mandor || $mandor['role'] !== 'mandor') {
-      redirect('/admin/karyawan?error=Karyawan tidak ditemukan');
-    }
+    $_SESSION['alert'] = [
+      'type' => 'success',
+      'message' => 'Karyawan ' . $data['username'] . ' berhasil ditambahkan.'
+    ];
 
-    view('pages/admin/karyawan/edit', ['mandor' => $mandor]);
+    redirect('/admin/karyawan');
   }
 
   public static function update($id)
   {
-    $user = new User();
-    $mandor = $user->find($id);
+    $rules = [
+      'username' => 'string',
+      'phone_number' => 'numeric',
+      'role' => 'string',
+    ];
 
-    if (!$mandor || $mandor['role'] !== 'mandor') {
-      redirect('/admin/karyawan?error=Karyawan tidak ditemukan');
+    validate($_POST, $rules);
+
+    $user = new User();
+    $authUser = $_SESSION['user']['id']; // ID pengguna yang sedang login
+    $karyawan = $user->find($id);
+
+    if (!$karyawan) {
+      $_SESSION['alert'] = [
+        'type' => 'danger',
+        'message' => 'Karyawan tidak ditemukan.'
+      ];
+      redirect('/admin/karyawan');
+    }
+
+    // Cek apakah pengguna mencoba mengubah role dirinya sendiri
+    if ($id == $authUser && isset($_POST['role']) && $_POST['role'] !== $karyawan['role']) {
+      $_SESSION['alert'] = [
+        'type' => 'danger',
+        'message' => 'Anda tidak dapat mengubah role akun Anda sendiri.'
+      ];
+      redirect('/admin/karyawan');
     }
 
     $data = [
       'username' => $_POST['username'],
       'phone_number' => $_POST['phone_number'],
-      'role' => 'mandor',
+      'role' => $_POST['role'],
     ];
 
     $user->update($id, $data);
-    redirect('/admin/karyawan?success=Karyawan berhasil diperbarui');
+
+    $_SESSION['alert'] = [
+      'type' => 'success',
+      'message' => 'Karyawan ' . $karyawan['username'] . ' berhasil diperbarui.'
+    ];
+
+    redirect('/admin/karyawan');
   }
 
   public static function destroy($id)
   {
     $user = new User();
-    $mandor = $user->find($id);
+    $authUser = $_SESSION['user']['id'];
+    $karyawan = $user->find($id);
 
-    if (!$mandor || $mandor['role'] !== 'mandor') {
-      redirect('/admin/karyawan?error=Karyawan tidak ditemukan');
+    if (!$karyawan) {
+      $_SESSION['alert'] = [
+        'type' => 'danger',
+        'message' => 'Karyawan tidak ditemukan.'
+      ];
+      redirect('/admin/karyawan');
     }
 
+    if ($id == $authUser) {
+      $_SESSION['alert'] = [
+        'type' => 'danger',
+        'message' => 'Anda tidak dapat menghapus akun Anda sendiri.'
+      ];
+      redirect('/admin/karyawan');
+    }
+
+    $_SESSION['alert'] = [
+      'type' => 'success',
+      'message' => 'Karyawan ' . $karyawan['username'] . ' berhasil dihapus.'
+    ];
+
     $user->delete($id);
-    redirect('/admin/karyawan?success=Karyawan berhasil dihapus');
+
+
+    redirect('/admin/karyawan');
   }
 }
