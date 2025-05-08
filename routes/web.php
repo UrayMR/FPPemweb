@@ -1,57 +1,87 @@
 <?php
 
 require_once __DIR__ . '/../core/Router.php';
+require_once __DIR__ . '/../core/Middleware.php';
+
 require_once __DIR__ . '/../app/Controllers/AuthController.php';
 require_once __DIR__ . '/../app/Controllers/AdminController.php';
 require_once __DIR__ . '/../app/Controllers/MandorController.php';
 require_once __DIR__ . '/../app/Controllers/admin/KaryawanController.php';
 require_once __DIR__ . '/../app/Controllers/admin/AdminProyekController.php';
-require_once __DIR__ . '/../core/Middleware.php';
 
-// Route untuk login dan logout
+/**
+ * -----------------------
+ * AUTH ROUTES
+ * -----------------------
+ */
+
+// Halaman login
 Router::get('/login', function () {
-  Middleware::guest(); // hanya guest yang bisa akses login
-  AuthController::showLogin();
+  Middleware::guest();
+  AuthController::index();
 });
 
+// Proses login
 Router::post('/login', function () {
-  Middleware::guest(); // hanya guest yang bisa akses login
+  Middleware::guest();
   AuthController::login();
 });
 
+// Logout
 Router::get('/logout', function () {
-  Middleware::auth(); // hanya user yang sudah login yang bisa logout
+  Middleware::auth();
   AuthController::logout();
 });
 
-// Route untuk Admin dan Mandor dengan pemeriksaan role
+/**
+ * -----------------------
+ * REDIRECT ROLE
+ * -----------------------
+ */
 Router::get('/', function () {
-  // Redirect user ke dashboard berdasarkan role
-  Middleware::auth(); // hanya user yang sudah login
-  $role = $_SESSION['user']['role'];
+  if (!isset($_SESSION['user'])) {
+    header('Location: /login');
+    exit;
+  }
+
+  $role = $_SESSION['user']['role'] ?? null;
+
   if ($role === 'admin') {
     header('Location: /admin/dashboard');
   } elseif ($role === 'mandor') {
     header('Location: /mandor/dashboard');
+  } else {
+    echo "Role tidak dikenali.";
   }
+  exit;
 });
 
+/**
+ * -----------------------
+ * ADMIN ROUTES
+ * -----------------------
+ */
 Router::get('/admin/dashboard', function () {
-  Middleware::role('admin'); // hanya admin yang bisa akses
+  Middleware::role('admin');
   AdminController::dashboard();
 });
 
 Router::get('/admin/karyawan', function () {
-  Middleware::role('admin'); // hanya admin yang bisa akses
+  Middleware::role('admin');
   KaryawanController::index();
 });
 
 Router::get('/admin/proyek', function () {
-  Middleware::role('admin'); // hanya admin yang bisa akses
+  Middleware::role('admin');
   AdminProyekController::index();
 });
 
+/**
+ * -----------------------
+ * MANDOR ROUTES
+ * -----------------------
+ */
 Router::get('/mandor/dashboard', function () {
-  Middleware::role('mandor'); // hanya mandor yang bisa akses
+  Middleware::role('mandor');
   MandorController::dashboard();
 });

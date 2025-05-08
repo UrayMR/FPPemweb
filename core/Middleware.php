@@ -31,5 +31,6 @@ class Middleware
       }
       exit;
     }
+    
   }
 }
