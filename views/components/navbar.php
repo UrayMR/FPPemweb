@@ -32,7 +32,8 @@
           </li>
         </ul>
 
-        <form action="">
+        <form method="POST" action="/logout">
+          <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
           <button class="btn btn-outline-danger" type="submit">Logout</button>
         </form>
       </div>

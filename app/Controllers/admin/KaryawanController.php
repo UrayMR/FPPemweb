@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../../Models/User.php';
-require_once __DIR__ . '/../../../core/Helpers.php';
 
 class KaryawanController
 {
@@ -26,6 +25,8 @@ class KaryawanController
 
   public static function store()
   {
+    verifyCsrfToken($_POST['csrf_token']);
+
     $rules = [
       'username' => 'string',
       'phone_number' => 'numeric',
@@ -52,6 +53,8 @@ class KaryawanController
 
   public static function update($id)
   {
+    verifyCsrfToken($_POST['csrf_token']);
+
     $rules = [
       'username' => 'string',
       'phone_number' => 'numeric',
@@ -99,6 +102,8 @@ class KaryawanController
 
   public static function destroy($id)
   {
+    verifyCsrfToken($_POST['csrf_token']);
+
     $user = new User();
     $authUser = $_SESSION['user']['id'];
     $karyawan = $user->find($id);

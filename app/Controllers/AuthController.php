@@ -1,7 +1,7 @@
 <?php
 
+
 require_once __DIR__ . '/../Models/User.php';
-require_once __DIR__ . '/../../core/auth.php';
 
 class AuthController
 {
@@ -12,9 +12,20 @@ class AuthController
 
   public static function login()
   {
+    // Verifikasi CSRF token
+    verifyCsrfToken($_POST['csrf_token']);
+
+    // Aturan validasi
+    $rules = [
+      'username' => 'string',
+      'phone_number' => 'numeric',
+    ];
+
+    // Validasi data
+    validate($_POST, $rules);
+
     $username = $_POST['username'];
     $phone_number = $_POST['phone_number'];
-
 
     $userModel = new User();
     $user = $userModel->findByCredentials($username, $phone_number);
@@ -41,6 +52,9 @@ class AuthController
 
   public static function logout()
   {
+    // Verifikasi CSRF token
+    verifyCsrfToken($_POST['csrf_token']);
+
     logout();
     redirect('/login');
   }

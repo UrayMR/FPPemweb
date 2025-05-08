@@ -2,6 +2,9 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form id="dynamicForm" method="POST">
+        <!-- Generate CSRF Token -->
+        <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+
         <div class="modal-header">
           <h5 class="modal-title" id="modalTitle">Judul Modal</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>

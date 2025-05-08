@@ -12,6 +12,7 @@
       <h3 class="card-title text-center">Login Form</h3>
       <hr>
       <form action="/login" method="POST">
+        <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
         <div class="mb-3">
           <label class="form-label">Username</label>
           <input type="text" name="username" class="form-control" required>
