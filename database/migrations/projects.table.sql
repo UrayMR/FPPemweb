@@ -6,7 +6,7 @@ CREATE TABLE projects (
   start_date DATE,
   end_date DATE,
   status ENUM('install', 'non-install') DEFAULT 'install',
-  notes TEXT,
+  description TEXT,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 

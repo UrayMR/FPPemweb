@@ -28,8 +28,8 @@ class KaryawanController
     verifyCsrfToken($_POST['csrf_token']);
 
     $rules = [
-      'username' => 'string',
-      'phone_number' => 'numeric',
+      'username' => 'required|string',
+      'phone_number' => 'required|numeric',
     ];
 
     validate($_POST, $rules);
@@ -56,9 +56,9 @@ class KaryawanController
     verifyCsrfToken($_POST['csrf_token']);
 
     $rules = [
-      'username' => 'string',
-      'phone_number' => 'numeric',
-      'role' => 'string',
+      'username' => 'required|string',
+      'phone_number' => 'required|numeric',
+      'role' => 'required|string',
     ];
 
     validate($_POST, $rules);

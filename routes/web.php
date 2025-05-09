@@ -4,7 +4,7 @@ require_once __DIR__ . '/../app/Controllers/AuthController.php';
 require_once __DIR__ . '/../app/Controllers/AdminController.php';
 require_once __DIR__ . '/../app/Controllers/MandorController.php';
 require_once __DIR__ . '/../app/Controllers/admin/KaryawanController.php';
-require_once __DIR__ . '/../app/Controllers/admin/AdminProyekController.php';
+require_once __DIR__ . '/../app/Controllers/admin/AdminProjectsController.php';
 
 /**
  * -----------------------
@@ -76,9 +76,24 @@ Router::post('/admin/karyawan/update/{id}', function ($id) {
   KaryawanController::update($id);
 });
 
-Router::get('/admin/proyek', function () {
+Router::get('/admin/projects', function () {
   Middleware::role('admin'); // Pastikan hanya admin yang bisa mengakses
-  AdminProyekController::index();
+  AdminProjectsController::index();
+});
+
+Router::post('/admin/projects/create', function () {
+  Middleware::role('admin'); // Verifikasi CSRF dan pastikan hanya admin yang bisa mengakses
+  AdminProjectsController::store();
+});
+
+Router::post('/admin/projects/update/{id}', function ($id) {
+  Middleware::role('admin'); // Verifikasi CSRF dan pastikan hanya admin yang bisa mengakses
+  AdminProjectsController::update($id);
+});
+
+Router::post('/admin/projects/delete/{id}', function ($id) {
+  Middleware::role('admin'); // Verifikasi CSRF dan pastikan hanya admin yang bisa mengakses
+  AdminProjectsController::destroy($id);
 });
 
 /**

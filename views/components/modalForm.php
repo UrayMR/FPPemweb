@@ -22,13 +22,7 @@
 </div>
 
 <script>
-  function openDynamicFormModal({
-    title,
-    actionUrl,
-    fields,
-    data = {},
-    method = "POST"
-  }) {
+  function openDynamicFormModal({ title, actionUrl, fields, data = {}, method = "POST" }) {
     const modalTitle = document.getElementById("modalTitle");
     const modalForm = document.getElementById("dynamicForm");
     const modalFormFields = document.getElementById("modalFormFields");
@@ -39,24 +33,18 @@
 
     modalFormFields.innerHTML = "";
 
-    // Hapus hidden input jika sudah ada sebelumnya
-    const existingHiddenInput = modalForm.querySelector('#idInput');
-    if (existingHiddenInput) {
-      existingHiddenInput.remove();
-    }
-
-    // Tambahkan hidden input hanya jika actionUrl mengandung "update"
-    if (actionUrl.includes("update") && data.id) {
-      let hiddenInput = document.createElement("input");
-      hiddenInput.id = "idInput";
-      hiddenInput.type = "hidden";
-      hiddenInput.name = "id";
-      hiddenInput.value = data.id;
-      modalForm.appendChild(hiddenInput);
-    }
-
     fields.forEach(field => {
-      let value = data[field.name] ?? "";
+      let value = data[field.name] ?? field.value ?? ""; // Prioritaskan `data` lalu `value` default
+
+      // Jika field adalah hidden, tambahkan langsung ke form
+      if (field.type === "hidden") {
+        let hiddenInput = document.createElement("input");
+        hiddenInput.type = "hidden";
+        hiddenInput.name = field.name;
+        hiddenInput.value = value;
+        modalForm.appendChild(hiddenInput);
+        return; // Skip rendering visible input
+      }
 
       let inputWrapper = document.createElement("div");
       inputWrapper.classList.add("mb-3");
@@ -87,6 +75,25 @@
         });
 
         inputWrapper.appendChild(select);
+      } else if (field.type === "textarea") {
+        let textarea = document.createElement("textarea");
+        textarea.name = field.name;
+        textarea.classList.add("form-control");
+        textarea.value = value;
+        if (field.required) {
+          textarea.required = true;
+        }
+        inputWrapper.appendChild(textarea);
+      } else if (field.type === "date") {
+        let dateInput = document.createElement("input");
+        dateInput.type = "date";
+        dateInput.name = field.name;
+        dateInput.classList.add("form-control");
+        dateInput.value = value;
+        if (field.required) {
+          dateInput.required = true;
+        }
+        inputWrapper.appendChild(dateInput);
       }
       // Default: text input
       else {

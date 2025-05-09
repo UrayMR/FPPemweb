@@ -57,7 +57,7 @@ function generateModalEdit($karyawan)
 
   <?php include __DIR__ . "/../../../components/alert.php" ?>
 
-  <table class="table table-bordered">
+  <table class="table table-bordered mt-2">
     <thead>
       <tr>
         <th>#</th>

@@ -13,7 +13,7 @@
           <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/karyawan') ? 'active' : '' ?>" href="/admin/karyawan">Karyawan</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/proyek') ? 'active' : '' ?>" href="/admin/proyek">Proyek</a>
+          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/proyek') ? 'active' : '' ?>" href="/admin/projects">Proyek</a>
         </li>
       </ul>
       <div class="d-flex gap-3">

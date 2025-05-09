@@ -3,6 +3,9 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <form id="deleteForm" method="POST">
+        <!-- Generate CSRF Token -->
+        <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+
         <div class="modal-header bg-danger text-white">
           <h5 class="modal-title" id="deleteModalLabel">Konfirmasi Hapus</h5>
           <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
