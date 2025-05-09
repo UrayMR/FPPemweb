@@ -32,18 +32,39 @@ function validate($data, $rules)
 {
   $errors = [];
 
-  foreach ($rules as $field => $rule) {
-    if (!isset($data[$field]) || empty(trim($data[$field]))) {
-      $errors[$field] = ucfirst($field) . ' is required.';
-    } elseif ($rule === 'string' && !is_string($data[$field])) {
-      $errors[$field] = ucfirst($field) . ' must be a string.';
-    } elseif ($rule === 'numeric' && !is_numeric($data[$field])) {
-      $errors[$field] = ucfirst($field) . ' must be a number.';
+  foreach ($rules as $field => $ruleSet) {
+    $value = $data[$field] ?? null;
+
+    // Pisahkan aturan jika ada lebih dari satu
+    $ruleSet = is_array($ruleSet) ? $ruleSet : explode('|', $ruleSet);
+
+    foreach ($ruleSet as $rule) {
+      if ($rule === 'required' && (is_null($value) || trim($value) === '')) {
+        $errors[$field] = ucfirst($field) . ' is required.';
+      } elseif ($rule === 'string' && !is_string($value)) {
+        $errors[$field] = ucfirst($field) . ' must be a string.';
+      } elseif ($rule === 'numeric' && !is_numeric($value)) {
+        $errors[$field] = ucfirst($field) . ' must be a number.';
+      } elseif (strpos($rule, 'min:') === 0) {
+        $min = (int) str_replace('min:', '', $rule);
+        if (strlen($value) < $min) {
+          $errors[$field] = ucfirst($field) . " must be at least $min characters.";
+        }
+      } elseif (strpos($rule, 'max:') === 0) {
+        $max = (int) str_replace('max:', '', $rule);
+        if (strlen($value) > $max) {
+          $errors[$field] = ucfirst($field) . " must not exceed $max characters.";
+        }
+      } elseif (strpos($rule, 'regex:') === 0) {
+        $pattern = str_replace('regex:', '', $rule);
+        if (!preg_match($pattern, $value)) {
+          $errors[$field] = ucfirst($field) . ' format is invalid.';
+        }
+      }
     }
   }
 
   if (!empty($errors)) {
-    // Periksa apakah permintaan berasal dari API (misalnya, JSON)
     if (isset($_SERVER['HTTP_ACCEPT']) && strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false) {
       header('Content-Type: application/json');
       echo json_encode([
@@ -54,11 +75,9 @@ function validate($data, $rules)
       exit;
     }
 
-    // Jika bukan API, gunakan sesi dan redirect
     $_SESSION['alert'] = [
       'type' => 'danger',
       'message' => 'Validation failed.',
-      'errors' => $errors
     ];
     redirect($_SERVER['HTTP_REFERER']);
     exit;

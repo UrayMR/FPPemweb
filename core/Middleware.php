@@ -31,11 +31,10 @@ class Middleware
   {
     if (isset($_SESSION['user'])) {
       $role = $_SESSION['user']['role'];
-      // Redirect berdasarkan role jika sudah login
       if ($role === 'admin') {
-        header('Location: /admin/dashboard');
+        redirect('/admin/dashboard');
       } elseif ($role === 'mandor') {
-        header('Location: /mandor/dashboard');
+        redirect('/mandor/dashboard');
       }
       exit;
     }

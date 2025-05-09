@@ -12,6 +12,22 @@ require_once __DIR__ . '/../app/Controllers/admin/AdminProyekController.php';
  * -----------------------
  */
 
+// Halaman utama
+Router::get('/', function () {
+  if (isset($_SESSION['user'])) {
+    $role = $_SESSION['user']['role'];
+    // Redirect berdasarkan role
+    if ($role === 'admin') {
+      redirect('/admin/dashboard');
+    } elseif ($role === 'mandor') {
+      redirect('/mandor/dashboard');
+    }
+  } else {
+    // Jika belum login, arahkan ke halaman login
+    redirect('/login');
+  }
+});
+
 // Halaman login
 Router::get('/login', function () {
   Middleware::guest(); // Pastikan hanya tamu yang bisa mengakses
@@ -20,7 +36,7 @@ Router::get('/login', function () {
 
 // Proses login
 Router::post('/login', function () {
-  Middleware::role('guest'); // Verifikasi CSRF dan pastikan hanya tamu yang bisa mengakses
+  Middleware::guest();
   AuthController::login();
 });
 

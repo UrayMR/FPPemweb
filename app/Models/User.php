@@ -11,12 +11,45 @@ class User
     $this->db = Connection::getInstance();
   }
 
+  /**
+   * -----------------------
+   * FIND METHODS
+   * -----------------------
+   */
+
+  public function find($id)
+  {
+    $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$id]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function findByUsername($username)
+  {
+    $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
+  public function findByPhone($phone)
+  {
+    $stmt = $this->db->prepare("SELECT * FROM users WHERE phone_number = ?");
+    $stmt->execute([$phone]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
   public function findByCredentials($username, $phone_number)
   {
     $stmt = $this->db->prepare("SELECT * FROM users WHERE username = ? AND phone_number = ?");
     $stmt->execute([$username, $phone_number]);
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
+
+  /**
+   * -----------------------
+   * PAGINATION METHODS
+   * -----------------------
+   */
 
   public function total()
   {
@@ -36,19 +69,11 @@ class User
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function find($id)
-  {
-    $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");
-    $stmt->execute([$id]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-  }
-
-  public function findByPhone($phone)
-  {
-    $stmt = $this->db->prepare("SELECT * FROM users WHERE phone_number = ?");
-    $stmt->execute([$phone]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-  }
+  /**
+   * -----------------------
+   * CREATE, UPDATE, DELETE
+   * -----------------------
+   */
 
   public function create($data)
   {

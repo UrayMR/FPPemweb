@@ -17,8 +17,8 @@ class AuthController
 
     // Aturan validasi
     $rules = [
-      'username' => 'string',
-      'phone_number' => 'numeric',
+      'username' => 'required|string',
+      'phone_number' => 'required|numeric',
     ];
 
     // Validasi data
@@ -39,13 +39,21 @@ class AuthController
       } elseif ($user['role'] === 'mandor') {
         redirect('/mandor/dashboard');
       } else {
+        $_SESSION['alert'] = [
+          'type' => 'danger',
+          'message' => 'Role tidak valid.',
+        ];
         redirect('/login');
       }
 
       exit;
     }
 
-    $_SESSION['error'] = 'Login gagal. Periksa data Anda.';
+    // Jika user tidak ditemukan
+    $_SESSION['alert'] = [
+      'type' => 'danger',
+      'message' => 'Login gagal. Username atau nomor telepon tidak valid.',
+    ];
     redirect('/login');
     exit;
   }

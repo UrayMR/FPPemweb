@@ -84,6 +84,15 @@ class KaryawanController
       redirect('/admin/karyawan');
     }
 
+    // cek apakah pengguna mencoba menggunakan nomor telefon pengguna lain
+    // if ($user->isPhoneNumberExists($_POST['phone_number'], $id)) {
+    //   $_SESSION['alert'] = [
+    //     'type' => 'danger',
+    //     'message' => 'Nomor telepon sudah digunakan oleh pengguna lain.'
+    //   ];
+    //   redirect('/admin/karyawan');
+    // }
+
     $data = [
       'username' => $_POST['username'],
       'phone_number' => $_POST['phone_number'],

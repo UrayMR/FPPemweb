@@ -20,8 +20,6 @@
 </head>
 
 <body>
-  <?php include __DIR__ . '/../components/alert.php'; ?>
-
   <main>
     <?php include __DIR__ . '/../' . $view . '.php'; ?>
   </main>
