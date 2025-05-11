@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+<nav class="navbar navbar-expand-lg bg-body-tertiary sticky" data-bs-theme="dark" style="position: sticky; top: 0; z-index: 999;">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">CV Mentari Pagi Engineering</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">

@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../../Models/Project.php';
 require_once __DIR__ . '/../../Models/ProjectDetail.php';
+require_once __DIR__ . '/../../Models/ProjectNotification.php';
+
 
 class AdminProjectsController
 {
@@ -14,6 +16,7 @@ class AdminProjectsController
 
       $project = new Project();
       $projectDetail = new ProjectDetail();
+      $projectNotification = new ProjectNotification();
 
       $totalProjects = $project->total();
       $projectList = $project->allPaginated($limit, $offset);
@@ -21,6 +24,10 @@ class AdminProjectsController
       foreach ($projectList as &$projectItem) {
         $lastComment = $projectDetail->findByProject($projectItem['id']);
         $projectItem['last_comment'] = $lastComment ? $lastComment[0]['comment'] : '';
+
+        // Tambahkan status sudah dibaca
+        $notif = $projectNotification->findByProjectAndUser($projectItem['id'], $projectItem['user_id']);
+        $projectItem['notif_is_read'] = $notif ? (bool)$notif['is_read'] : false;
       }
 
       $totalPages = ceil($totalProjects / $limit);
@@ -55,8 +62,9 @@ class AdminProjectsController
       }
 
       $projectDetail = new ProjectDetail();
+      $projectNotification = new ProjectNotification();
 
-      // Perbarui komentar jika sudah ada, atau buat baru jika belum ada
+      // Cek apakah komentar sebelumnya sudah ada
       if ($projectDetail->findByProject($project_id)) {
         $projectDetail->updateComment($project_id, $admin_id, $comment);
       } else {
@@ -65,6 +73,27 @@ class AdminProjectsController
           'user_id' => $admin_id,
           'comment' => $comment,
         ]);
+      }
+
+      // Cari user mandor pemilik proyek
+      $projectModel = new Project();
+      $project = $projectModel->find($project_id);
+
+      if ($project) {
+        $mandor_id = $project['user_id'];
+
+        // Cek jika sudah ada notifikasi sebelumnya
+        $existingNotif = $projectNotification->findByProjectAndUser($project_id, $mandor_id);
+        if ($existingNotif) {
+          // Update is_read = 0 supaya dianggap notif baru
+          $projectNotification->updateUnread($existingNotif['id']);
+        } else {
+          // Buat notifikasi baru
+          $projectNotification->create([
+            'user_id' => $mandor_id,
+            'project_id' => $project_id,
+          ]);
+        }
       }
 
       $_SESSION['alert'] = ['type' => 'success', 'message' => 'Komentar berhasil diperbarui.'];

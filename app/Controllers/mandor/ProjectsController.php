@@ -1,6 +1,8 @@
 <?php
 
 require_once __DIR__ . '/../../Models/Project.php';
+require_once __DIR__ . '/../../Models/ProjectDetail.php';
+require_once __DIR__ . '/../../Models/ProjectNotification.php';
 
 class ProjectsController
 {
@@ -13,8 +15,20 @@ class ProjectsController
       $offset = ($page - 1) * $limit;
 
       $project = new Project();
+      $projectDetail = new ProjectDetail();
+      $projectNotif = new ProjectNotification();
+
       $totalProjects = count($project->findByUserId($userId));
       $projectList = $project->allPaginatedUserId($userId, $limit, $offset);
+
+      foreach ($projectList as &$projectItem) {
+        $lastComment = $projectDetail->findByProject($projectItem['id']);
+        $notif = $projectNotif->findByProjectAndUser($projectItem['id'], $userId);
+
+        $projectItem['last_comment'] = $lastComment ? $lastComment[0]['comment'] : '';
+        $projectItem['notif_unread'] = $notif && $notif['is_read'] == 0;
+        $projectItem['notif_id'] = $notif ? $notif['id'] : null;
+      }
 
       $totalPages = ceil($totalProjects / $limit);
 
@@ -121,6 +135,29 @@ class ProjectsController
       $_SESSION['alert'] = ['type' => 'success', 'message' => 'Proyek ' . $existingProject['project_name'] . ' dihapus.'];
 
       $project->delete($id);
+    } catch (Exception $e) {
+      $_SESSION['alert'] = ['type' => 'danger', 'message' => $e->getMessage()];
+    }
+
+    redirect('/mandor/projects');
+  }
+
+  public static function markAsRead($project_id)
+  {
+    try {
+      verifyCsrfToken($_POST['csrf_token']);
+
+      $user_id = $_SESSION['user']['id']; // ID mandor login
+      $notifModel = new ProjectNotification();
+
+      $notif = $notifModel->findByProjectAndUser($project_id, $user_id);
+      if (!$notif) {
+        throw new Exception('Notifikasi tidak ditemukan.');
+      }
+
+      $notifModel->markAsRead($notif['id']);
+
+      $_SESSION['alert'] = ['type' => 'success', 'message' => 'Komentar ditandai sudah dibaca.'];
     } catch (Exception $e) {
       $_SESSION['alert'] = ['type' => 'danger', 'message' => $e->getMessage()];
     }

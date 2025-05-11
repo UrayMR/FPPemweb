@@ -116,3 +116,8 @@ Router::post('/mandor/projects/delete/{id}', function ($id) {
   Middleware::role('mandor'); // Verifikasi CSRF dan pastikan hanya mandor yang bisa mengakses
   ProjectsController::destroy($id);
 });
+
+Router::post('/mandor/projects/read/{id}', function ($id) {
+  Middleware::role('mandor');
+  ProjectsController::markAsRead($id);
+});

@@ -16,6 +16,13 @@
           <label for="comment">Komentar dari Admin:</label>
           <textarea id="comment" name="comment" class="form-control comment-field" rows="3" <?= !empty($project['last_comment']) ? 'disabled' : '' ?> required><?= htmlspecialchars($project['last_comment']) ?></textarea>
           <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
+
+          <?php if (!empty($project['last_comment']) && isset($project['notif_is_read']) && $project['notif_is_read']): ?>
+            <div class="alert alert-success py-2 px-3 mt-3 mb-1 alert-isread">
+              Komentar ini sudah dibaca oleh Mandor.
+            </div>
+          <?php endif; ?>
+
         </div>
         <div class="modal-footer">
           <?php if (!empty($project['last_comment'])): ?>
@@ -39,6 +46,7 @@
     const saveButton = modal.querySelector('.save-btn');
     const cancelButton = modal.querySelector('.cancel-btn');
     const editButton = modal.querySelector('.edit-btn');
+    const alertIsRead = modal.querySelector('.alert-isread');
 
     if (event.target.classList.contains('edit-btn')) {
       commentField.disabled = false;
@@ -46,6 +54,7 @@
 
       editButton.style.display = 'none';
       closeButton.style.display = 'none';
+      alertIsRead.style.display = 'none';
 
       cancelButton.style.display = 'inline-block';
       saveButton.style.display = 'inline-block';
@@ -57,6 +66,7 @@
 
       editButton.style.display = 'inline-block';
       closeButton.style.display = 'inline-block';
+      alertIsRead.style.display = 'block';
 
       cancelButton.style.display = 'none';
       saveButton.style.display = 'none';
