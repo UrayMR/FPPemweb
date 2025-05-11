@@ -5,6 +5,7 @@ require_once __DIR__ . '/../app/Controllers/AdminController.php';
 require_once __DIR__ . '/../app/Controllers/MandorController.php';
 require_once __DIR__ . '/../app/Controllers/admin/KaryawanController.php';
 require_once __DIR__ . '/../app/Controllers/admin/AdminProjectsController.php';
+require_once __DIR__ . '/../app/Controllers/mandor/ProjectsController.php';
 
 /**
  * -----------------------
@@ -81,19 +82,9 @@ Router::get('/admin/projects', function () {
   AdminProjectsController::index();
 });
 
-Router::post('/admin/projects/create', function () {
-  Middleware::role('admin'); // Verifikasi CSRF dan pastikan hanya admin yang bisa mengakses
-  AdminProjectsController::store();
-});
-
-Router::post('/admin/projects/update/{id}', function ($id) {
-  Middleware::role('admin'); // Verifikasi CSRF dan pastikan hanya admin yang bisa mengakses
-  AdminProjectsController::update($id);
-});
-
-Router::post('/admin/projects/delete/{id}', function ($id) {
-  Middleware::role('admin'); // Verifikasi CSRF dan pastikan hanya admin yang bisa mengakses
-  AdminProjectsController::destroy($id);
+Router::post('/admin/projects/comment/{id}', function ($id) {
+  Middleware::role('admin'); // Pastikan hanya admin yang bisa mengakses
+  AdminProjectsController::comment($id);
 });
 
 /**
@@ -104,4 +95,24 @@ Router::post('/admin/projects/delete/{id}', function ($id) {
 Router::get('/mandor/dashboard', function () {
   Middleware::role('mandor'); // Pastikan hanya mandor yang bisa mengakses
   MandorController::dashboard();
+});
+
+Router::get('/mandor/projects', function () {
+  Middleware::role('mandor'); // Pastikan hanya mandor yang bisa mengakses
+  ProjectsController::index();
+});
+
+Router::post('/mandor/projects/create', function () {
+  Middleware::role('mandor'); // Verifikasi CSRF dan pastikan hanya mandor yang bisa mengakses
+  ProjectsController::store();
+});
+
+Router::post('/mandor/projects/update/{id}', function ($id) {
+  Middleware::role('mandor'); // Verifikasi CSRF dan pastikan hanya mandor yang bisa mengakses
+  ProjectsController::update($id);
+});
+
+Router::post('/mandor/projects/delete/{id}', function ($id) {
+  Middleware::role('mandor'); // Verifikasi CSRF dan pastikan hanya mandor yang bisa mengakses
+  ProjectsController::destroy($id);
 });

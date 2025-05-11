@@ -6,15 +6,24 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/dashboard') ? 'active' : '' ?>" href="/admin/dashboard">Dashboard</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/karyawan') ? 'active' : '' ?>" href="/admin/karyawan">Karyawan</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/proyek') ? 'active' : '' ?>" href="/admin/projects">Proyek</a>
-        </li>
+        <?php if ($_SESSION['user']['role'] === 'admin'): ?>
+          <li class="nav-item">
+            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/dashboard') ? 'active' : '' ?>" href="/admin/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/karyawan') ? 'active' : '' ?>" href="/admin/karyawan">Karyawan</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/projects') ? 'active' : '' ?>" href="/admin/projects">Proyek</a>
+          </li>
+        <?php elseif ($_SESSION['user']['role'] === 'mandor'): ?>
+          <li class="nav-item">
+            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/mandor/dashboard') ? 'active' : '' ?>" href="/mandor/dashboard">Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/mandor/projects') ? 'active' : '' ?>" href="/mandor/projects">Proyek</a>
+          </li>
+        <?php endif; ?>
       </ul>
       <div class="d-flex gap-3">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">

@@ -53,6 +53,18 @@ class Project
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function allPaginatedUserId($user_id, $limit, $offset)
+  {
+    $limit = (int)$limit;
+    $offset = (int)$offset;
+
+    $query = "SELECT * FROM projects WHERE user_id = $user_id ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
+    $stmt = $this->db->prepare($query);
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   /**
    * -----------------------
    * CREATE, UPDATE, DELETE

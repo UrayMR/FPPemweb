@@ -22,7 +22,13 @@
 </div>
 
 <script>
-  function openDynamicFormModal({ title, actionUrl, fields, data = {}, method = "POST" }) {
+  function openDynamicFormModal({
+    title,
+    actionUrl,
+    fields,
+    data = {},
+    method = "POST"
+  }) {
     const modalTitle = document.getElementById("modalTitle");
     const modalForm = document.getElementById("dynamicForm");
     const modalFormFields = document.getElementById("modalFormFields");
@@ -33,10 +39,12 @@
 
     modalFormFields.innerHTML = "";
 
-    fields.forEach(field => {
-      let value = data[field.name] ?? field.value ?? ""; // Prioritaskan `data` lalu `value` default
+    let currentRow = null; // Track the current row for dual input
 
-      // Jika field adalah hidden, tambahkan langsung ke form
+    fields.forEach((field, index) => {
+      let value = data[field.name] ?? field.value ?? ""; // Prioritize `data` then default `value`
+
+      // If field is hidden, add it directly to the form
       if (field.type === "hidden") {
         let hiddenInput = document.createElement("input");
         hiddenInput.type = "hidden";
@@ -46,14 +54,25 @@
         return; // Skip rendering visible input
       }
 
+      // Create a new row if `row` is not set or it's the first field
+      if (!field.row || !currentRow || (field.row && currentRow.dataset.row !== "true")) {
+        currentRow = document.createElement("div");
+        currentRow.classList.add("row", "mb-3");
+        if (field.row) {
+          currentRow.dataset.row = "true"; // Mark this row as a dual-input row
+        }
+        modalFormFields.appendChild(currentRow);
+      }
+
       let inputWrapper = document.createElement("div");
-      inputWrapper.classList.add("mb-3");
+      inputWrapper.classList.add(field.row ? "col-md-6" : "col-12"); // Use half-width for dual input
 
-      let label = document.createElement("label");
-      label.classList.add("form-label");
-      label.innerText = field.label;
-
-      inputWrapper.appendChild(label);
+      if (field.label) {
+        let label = document.createElement("label");
+        label.classList.add("form-label");
+        label.innerText = field.label;
+        inputWrapper.appendChild(label);
+      }
 
       // Select input
       if (field.type === "select") {
@@ -94,9 +113,8 @@
           dateInput.required = true;
         }
         inputWrapper.appendChild(dateInput);
-      }
-      // Default: text input
-      else {
+      } else {
+        // Default: text input
         let input = document.createElement("input");
         input.type = field.type || "text";
         input.name = field.name;
@@ -108,7 +126,12 @@
         inputWrapper.appendChild(input);
       }
 
-      modalFormFields.appendChild(inputWrapper);
+      currentRow.appendChild(inputWrapper);
+
+      // Reset row if the next field is not part of the same row or the current row is full
+      if (!fields[index + 1] || !fields[index + 1].row || currentRow.childElementCount >= 2) {
+        currentRow = null;
+      }
     });
   }
 </script>

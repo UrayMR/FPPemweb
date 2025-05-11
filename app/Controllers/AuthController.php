@@ -12,58 +12,51 @@ class AuthController
 
   public static function login()
   {
-    // Verifikasi CSRF token
-    verifyCsrfToken($_POST['csrf_token']);
+    try {
+      verifyCsrfToken($_POST['csrf_token']);
 
-    // Aturan validasi
-    $rules = [
-      'username' => 'required|string',
-      'phone_number' => 'required|numeric',
-    ];
+      $rules = [
+        'username' => 'required|string',
+        'phone_number' => 'required|numeric',
+      ];
 
-    // Validasi data
-    validate($_POST, $rules);
+      validate($_POST, $rules);
 
-    $username = $_POST['username'];
-    $phone_number = $_POST['phone_number'];
+      $username = $_POST['username'];
+      $phone_number = $_POST['phone_number'];
 
-    $userModel = new User();
-    $user = $userModel->findByCredentials($username, $phone_number);
+      $userModel = new User();
+      $user = $userModel->findByCredentials($username, $phone_number);
 
-    if ($user) {
+      if (!$user) {
+        throw new Exception('Login gagal. Username atau nomor telepon tidak valid.');
+      }
+
       login($user);
 
-      // Arahkan langsung ke dashboard sesuai role
       if ($user['role'] === 'admin') {
         redirect('/admin/dashboard');
       } elseif ($user['role'] === 'mandor') {
         redirect('/mandor/dashboard');
       } else {
-        $_SESSION['alert'] = [
-          'type' => 'danger',
-          'message' => 'Role tidak valid.',
-        ];
-        redirect('/login');
+        throw new Exception('Role tidak valid.');
       }
-
-      exit;
+    } catch (Exception $e) {
+      $_SESSION['alert'] = ['type' => 'danger', 'message' => $e->getMessage()];
+      redirect('/login');
     }
-
-    // Jika user tidak ditemukan
-    $_SESSION['alert'] = [
-      'type' => 'danger',
-      'message' => 'Login gagal. Username atau nomor telepon tidak valid.',
-    ];
-    redirect('/login');
-    exit;
   }
 
   public static function logout()
   {
-    // Verifikasi CSRF token
-    verifyCsrfToken($_POST['csrf_token']);
+    try {
+      verifyCsrfToken($_POST['csrf_token']);
+      logout();
+      $_SESSION['alert'] = ['type' => 'success', 'message' => 'Logout berhasil.'];
+    } catch (Exception $e) {
+      $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Terjadi kesalahan saat logout.'];
+    }
 
-    logout();
     redirect('/login');
   }
 }
