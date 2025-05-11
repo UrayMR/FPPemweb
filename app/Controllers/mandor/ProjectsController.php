@@ -52,8 +52,9 @@ class ProjectsController
         'project_name' => 'required|string',
         'customer_name' => 'string',
         'status' => 'required|string',
-        'start_date' => 'required|date',
+        'start_date' => 'date',
         'end_date' => 'date',
+        'description' => 'string',
       ];
 
       validate($_POST, $rules);
@@ -61,11 +62,11 @@ class ProjectsController
       $data = [
         'user_id' => $_SESSION['user']['id'],
         'project_name' => $_POST['project_name'],
-        'customer_name' => $_POST['customer_name'],
+        'customer_name' => !empty($_POST['customer_name']) ? $_POST['customer_name'] : NULL,
         'status' => $_POST['status'],
-        'start_date' => $_POST['start_date'],
-        'end_date' => $_POST['end_date'],
-        'description' => $_POST['description'],
+        'start_date' => !empty($_POST['start_date']) ? $_POST['start_date'] : NULL,
+        'end_date' => !empty($_POST['end_date']) ? $_POST['end_date'] : NULL,
+        'description' => !empty($_POST['description']) ? $_POST['description'] : NULL,
       ];
 
       $project = new Project();
@@ -88,8 +89,9 @@ class ProjectsController
         'project_name' => 'required|string',
         'customer_name' => 'string',
         'status' => 'required|string',
-        'start_date' => 'required|date',
+        'start_date' => 'date',
         'end_date' => 'date',
+        'description' => 'string',
       ];
 
       validate($_POST, $rules);
@@ -103,16 +105,16 @@ class ProjectsController
 
       $data = [
         'project_name' => $_POST['project_name'],
-        'customer_name' => $_POST['customer_name'],
+        'customer_name' => !empty($_POST['customer_name']) ? $_POST['customer_name'] : NULL,
         'status' => $_POST['status'],
-        'start_date' => $_POST['start_date'],
-        'end_date' => $_POST['end_date'],
-        'description' => $_POST['description'],
+        'start_date' => !empty($_POST['start_date']) ? $_POST['start_date'] : NULL,
+        'end_date' =>  !empty($_POST['end_date']) ? $_POST['end_date'] : NULL,
+        'description' => !empty($_POST['description']) ? $_POST['description'] : NULL,
       ];
 
       $project->update($id, $data);
 
-      $_SESSION['alert'] = ['type' => 'success', 'message' => 'Proyek' . $data['project_name'] . ' diperbarui.'];
+      $_SESSION['alert'] = ['type' => 'success', 'message' => 'Proyek ' . $data['project_name'] . ' diperbarui.'];
     } catch (Exception $e) {
       $_SESSION['alert'] = ['type' => 'danger', 'message' => $e->getMessage()];
     }

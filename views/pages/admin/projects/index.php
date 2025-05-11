@@ -27,18 +27,25 @@
           <tr>
             <td><?= $index + 1 ?></td>
             <td><?= htmlspecialchars($project['project_name']) ?></td>
-            <td><?= htmlspecialchars($project['customer_name']) ?></td>
-            <td> <span class="badge <?= $project['status'] === 'install' ? 'bg-success' : 'bg-secondary' ?>">
+            <td class="<?= empty($project['customer_name']) ? 'text-muted' : '' ?>">
+              <?= !empty($project['customer_name']) ? htmlspecialchars($project['customer_name']) : 'Belum Diisi' ?>
+            </td>
+            <td>
+              <span class="badge <?= $project['status'] === 'install' ? 'bg-success' : 'bg-secondary' ?>">
                 <?= ucfirst(htmlspecialchars($project['status'])) ?>
-              </span></td>
-            <td><?= htmlspecialchars($project['start_date']) ?></td>
-            <td><?= htmlspecialchars($project['end_date']) ?></td>
+              </span>
+            </td>
+            <td class="<?= empty($project['start_date']) ? 'text-muted' : '' ?>">
+              <?= !empty($project['start_date']) ? htmlspecialchars($project['start_date']) : 'Belum Diisi' ?>
+            </td>
+            <td class="<?= empty($project['end_date']) ? 'text-muted' : '' ?>">
+              <?= !empty($project['end_date']) ? htmlspecialchars($project['end_date']) : 'Belum Diisi' ?>
+            </td>
             <td>
               <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewProjectModal<?= $project['id'] ?>">Lihat</button>
             </td>
           </tr>
           <?php include __DIR__ . "/../../../components/modalProjectAdminForm.php" ?>
-
         <?php endforeach; ?>
       <?php endif; ?>
     </tbody>

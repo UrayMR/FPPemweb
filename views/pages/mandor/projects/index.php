@@ -16,7 +16,7 @@
           ['value' => 'non-install', 'label' => 'Non-Install'],
         ]
       ],
-      ['name' => 'start_date', 'label' => 'Tanggal Mulai', 'type' => 'date', 'required' => true, 'row' => true],
+      ['name' => 'start_date', 'label' => 'Tanggal Mulai', 'type' => 'date', 'row' => true],
       ['name' => 'end_date', 'label' => 'Tanggal Selesai', 'type' => 'date', 'row' => true],
       ['name' => 'description', 'label' => 'Keterangan', 'type' => 'textarea'],
     ]
@@ -41,7 +41,7 @@
             ['value' => 'non-install', 'label' => 'Non-Install'],
           ]
         ],
-        ['name' => 'start_date', 'label' => 'Tanggal Mulai', 'type' => 'date', 'required' => true, 'row' => true],
+        ['name' => 'start_date', 'label' => 'Tanggal Mulai', 'type' => 'date', 'row' => true],
         ['name' => 'end_date', 'label' => 'Tanggal Selesai', 'type' => 'date', 'row' => true],
         ['name' => 'description', 'label' => 'Keterangan', 'type' => 'textarea'],
       ],
@@ -85,16 +85,24 @@
         <?php else: ?>
           <?php foreach ($projectList as $index => $project): ?>
             <tr>
-              <td rowspan="<?= empty($project['last_comment']) ? 1 : 2 ?>"><?= $index + 1 ?></td>
+              <td rowspan="<?= empty($project['last_comment']) || !$project['notif_unread'] ? 1 : 2 ?>">
+                <?= $index + 1 ?>
+              </td>
               <td><?= htmlspecialchars($project['project_name']) ?></td>
-              <td><?= htmlspecialchars($project['customer_name']) ?></td>
+              <td class="<?= empty($project['customer_name']) ? 'text-muted' : '' ?>">
+                <?= !empty($project['customer_name']) ? htmlspecialchars($project['customer_name']) : 'Belum Diisi' ?>
+              </td>
               <td>
                 <span class="badge <?= $project['status'] === 'install' ? 'bg-success' : 'bg-secondary' ?>">
                   <?= ucfirst(htmlspecialchars($project['status'])) ?>
                 </span>
               </td>
-              <td><?= htmlspecialchars($project['start_date']) ?></td>
-              <td><?= htmlspecialchars($project['end_date']) ?></td>
+              <td class="<?= empty($project['start_date']) ? 'text-muted' : '' ?>">
+                <?= !empty($project['start_date']) ? htmlspecialchars($project['start_date']) : 'Belum Diisi' ?>
+              </td>
+              <td class="<?= empty($project['end_date']) ? 'text-muted' : '' ?>">
+                <?= !empty($project['end_date']) ? htmlspecialchars($project['end_date']) : 'Belum Diisi' ?>
+              </td>
               <td>
                 <a href="#"
                   class="btn btn-warning btn-sm"
@@ -119,7 +127,7 @@
               ?>
 
               <tr class="bg-light text-muted">
-                <td colspan="7">
+                <td colspan="6">
                   <strong>Komentar Admin:</strong>
                   <div class="d-flex justify-content-between align-items-center">
                     <span><?= nl2br(htmlspecialchars($shortComment)) ?></span>

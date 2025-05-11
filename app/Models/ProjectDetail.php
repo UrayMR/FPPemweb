@@ -24,7 +24,7 @@ class ProjectDetail
 
   public function findByProject($project_id)
   {
-    $stmt = $this->db->prepare("SELECT * FROM project_details WHERE project_id = ? ORDER BY created_at DESC");
+    $stmt = $this->db->prepare("SELECT * FROM project_details WHERE project_id = ? ORDER BY created_at DESC LIMIT 1");
     $stmt->execute([$project_id]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }

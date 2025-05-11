@@ -43,6 +43,24 @@ class ProjectNotification
     return $stmt->fetch(PDO::FETCH_ASSOC);
   }
 
+  public function getUnreadByUser($user_id)
+  {
+    $stmt = $this->db->prepare("
+    SELECT 
+  MAX(pn.id) as id,
+  p.project_name as project_name,
+  pn.project_id
+FROM project_notifications pn
+JOIN projects p ON pn.project_id = p.id
+WHERE pn.user_id = :user_id AND pn.is_read = 0
+GROUP BY pn.project_id, p.project_name
+
+  ");
+    $stmt->execute(['user_id' => $user_id]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+
   /**
    * -----------------------
    * CREATE METHOD

@@ -96,7 +96,7 @@ class AdminProjectsController
         }
       }
 
-      $_SESSION['alert'] = ['type' => 'success', 'message' => 'Komentar berhasil diperbarui.'];
+      $_SESSION['alert'] = ['type' => 'success', 'message' => 'Komentar ' . $project['project_name'] . ' berhasil diperbarui.'];
     } catch (Exception $e) {
       $_SESSION['alert'] = ['type' => 'danger', 'message' => $e->getMessage()];
     }

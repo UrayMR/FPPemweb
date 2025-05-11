@@ -7,10 +7,26 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <p><strong>Customer:</strong> <?= htmlspecialchars($project['customer_name']) ?></p>
+          <p><strong>Customer:</strong>
+            <span class="<?= empty($project['customer_name']) ? 'text-muted' : '' ?>">
+              <?= !empty($project['customer_name']) ? htmlspecialchars($project['customer_name']) : 'Belum Diisi' ?>
+            </span>
+          </p>
           <p><strong>Status:</strong> <?= ucfirst(htmlspecialchars($project['status'])) ?></p>
-          <p><strong>Waktu:</strong> <?= $project['start_date'] ?> s/d <?= $project['end_date'] ?></p>
-          <p><strong>Deskripsi:</strong> <?= nl2br(htmlspecialchars($project['description'])) ?></p>
+          <p><strong>Waktu:</strong>
+            <span class="<?= empty($project['start_date']) ? 'text-muted' : '' ?>">
+              <?= !empty($project['start_date']) ? htmlspecialchars($project['start_date']) : 'Belum Diisi' ?>
+            </span>
+            s/d
+            <span class="<?= empty($project['end_date']) ? 'text-muted' : '' ?>">
+              <?= !empty($project['end_date']) ? htmlspecialchars($project['end_date']) : 'Belum Diisi' ?>
+            </span>
+          </p>
+          <p><strong>Deskripsi:</strong>
+            <span class="<?= empty($project['description']) ? 'text-muted' : '' ?>">
+              <?= !empty($project['description']) ? nl2br(htmlspecialchars($project['description'])) : 'Belum Diisi' ?>
+            </span>
+          </p>
 
           <hr>
           <label for="comment">Komentar dari Admin:</label>
@@ -37,39 +53,61 @@
 </div>
 
 <script>
-  document.addEventListener('click', function(event) {
-    const modal = event.target.closest('.modal');
-    if (!modal) return; // Tambahkan pengecekan ini
+  document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners for all edit buttons when the DOM is fully loaded
+    const editButtons = document.querySelectorAll('.edit-btn');
+    editButtons.forEach(function(editBtn) {
+      editBtn.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        const commentField = modal.querySelector('.comment-field');
+        const saveButton = modal.querySelector('.save-btn');
+        const cancelButton = modal.querySelector('.cancel-btn');
+        const closeButton = modal.querySelector('.btn-close');
+        const alertIsRead = modal.querySelector('.alert-isread');
 
-    const commentField = modal.querySelector('.comment-field');
-    const closeButton = modal.querySelector('.btn-close');
-    const saveButton = modal.querySelector('.save-btn');
-    const cancelButton = modal.querySelector('.cancel-btn');
-    const editButton = modal.querySelector('.edit-btn');
-    const alertIsRead = modal.querySelector('.alert-isread');
+        // Enable comment field and show appropriate buttons
+        commentField.disabled = false;
+        commentField.focus();
 
-    if (event.target.classList.contains('edit-btn')) {
-      commentField.disabled = false;
-      commentField.focus();
+        // Hide edit button and close button
+        this.style.display = 'none';
+        if (closeButton) closeButton.style.display = 'none';
 
-      editButton.style.display = 'none';
-      closeButton.style.display = 'none';
-      alertIsRead.style.display = 'none';
+        // Hide alert if it exists
+        if (alertIsRead) alertIsRead.style.display = 'none';
 
-      cancelButton.style.display = 'inline-block';
-      saveButton.style.display = 'inline-block';
-    }
+        // Show save and cancel buttons
+        saveButton.style.display = 'inline-block';
+        cancelButton.style.display = 'inline-block';
+      });
+    });
 
-    if (event.target.classList.contains('cancel-btn')) {
-      commentField.disabled = true;
-      commentField.value = commentField.defaultValue;
+    // Add event listeners for all cancel buttons
+    const cancelButtons = document.querySelectorAll('.cancel-btn');
+    cancelButtons.forEach(function(cancelBtn) {
+      cancelBtn.addEventListener('click', function() {
+        const modal = this.closest('.modal');
+        const commentField = modal.querySelector('.comment-field');
+        const editButton = modal.querySelector('.edit-btn');
+        const saveButton = modal.querySelector('.save-btn');
+        const closeButton = modal.querySelector('.btn-close');
+        const alertIsRead = modal.querySelector('.alert-isread');
 
-      editButton.style.display = 'inline-block';
-      closeButton.style.display = 'inline-block';
-      alertIsRead.style.display = 'block';
+        // Reset and disable comment field
+        commentField.disabled = true;
+        commentField.value = commentField.defaultValue;
 
-      cancelButton.style.display = 'none';
-      saveButton.style.display = 'none';
-    }
+        // Show edit button and close button
+        editButton.style.display = 'inline-block';
+        if (closeButton) closeButton.style.display = 'block';
+
+        // Show alert if it exists
+        if (alertIsRead) alertIsRead.style.display = 'block';
+
+        // Hide save and cancel buttons
+        this.style.display = 'none';
+        saveButton.style.display = 'none';
+      });
+    });
   });
 </script>
