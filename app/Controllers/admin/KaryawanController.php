@@ -31,6 +31,7 @@ class KaryawanController
         'totalPages' => $totalPages,
         'search' => $filters['search'],
         'role' => $filters['role'],
+        'offset' => $offset,
       ]);
     } catch (Exception $e) {
       $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Terjadi kesalahan saat memuat data karyawan.'];

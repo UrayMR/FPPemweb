@@ -99,17 +99,95 @@ class Project
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function allPaginatedUserId($user_id, $limit, $offset)
+  public function allPaginatedUserId($userId, $limit, $offset, $filters = [])
   {
-    $limit = (int)$limit;
-    $offset = (int)$offset;
+    $sql = "SELECT * FROM projects WHERE user_id = :user_id";
+    $params = [':user_id' => $userId];
 
-    $query = "SELECT * FROM projects WHERE user_id = $user_id ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
-    $stmt = $this->db->prepare($query);
-    $stmt->execute();
+    if (!empty($filters['search'])) {
+      $sql .= " AND project_name LIKE :search";
+      $params[':search'] = "%" . $filters['search'] . "%";
+    }
+
+    if (!empty($filters['status'])) {
+      $sql .= " AND status = :status";
+      $params[':status'] = $filters['status'];
+    }
+
+    if (isset($filters['commented'])) {
+      if ($filters['commented'] === '1') {
+        // Projek yang memiliki komentar yang belum dibaca (is_read = 0)
+        $sql .= " AND EXISTS (
+                        SELECT 1 FROM project_notifications pn 
+                        WHERE pn.project_id = projects.id 
+                        AND pn.user_id = :user_id 
+                        AND pn.is_read = 0
+                    )";
+      } elseif ($filters['commented'] === '0') {
+        // Projek yang tidak memiliki komentar yang belum dibaca
+        $sql .= " AND NOT EXISTS (
+                        SELECT 1 FROM project_notifications pn 
+                        WHERE pn.project_id = projects.id 
+                        AND pn.user_id = :user_id 
+                        AND pn.is_read = 0
+                    )";
+      }
+    }
+
+    // Pastikan nilai integer untuk limit dan offset
+    $limit = (int) $limit;
+    $offset = (int) $offset;
+
+    // Tambahkan limit dan offset langsung
+    $sql .= " ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
+
+  public function countByUserIdWithFilters($userId, $filters)
+  {
+    $sql = "SELECT COUNT(*) as total FROM projects p WHERE p.user_id = :user_id";
+    $params = [':user_id' => $userId];
+
+    if (!empty($filters['search'])) {
+      $sql .= " AND (p.project_name LIKE :search OR p.description LIKE :search)";
+      $params[':search'] = "%" . $filters['search'] . "%";
+    }
+
+    if (!empty($filters['status'])) {
+      $sql .= " AND p.status = :status";
+      $params[':status'] = $filters['status'];
+    }
+
+    if (isset($filters['commented'])) {
+      if ($filters['commented'] === '1') {
+        // Menghitung proyek dengan komentar yang belum dibaca (is_read = 0)
+        $sql .= " AND EXISTS (
+                        SELECT 1 FROM project_notifications pn 
+                        WHERE pn.project_id = p.id 
+                        AND pn.user_id = :user_id 
+                        AND pn.is_read = 0
+                    )";
+      } elseif ($filters['commented'] === '0') {
+        // Menghitung proyek yang tidak memiliki komentar yang belum dibaca
+        $sql .= " AND NOT EXISTS (
+                        SELECT 1 FROM project_notifications pn 
+                        WHERE pn.project_id = p.id 
+                        AND pn.user_id = :user_id 
+                        AND pn.is_read = 0
+                    )";
+      }
+    }
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
+
+    return $stmt->fetch()['total'] ?? 0;
+  }
+
 
   /**
    * -----------------------

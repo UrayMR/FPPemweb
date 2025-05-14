@@ -14,12 +14,18 @@ class ProjectsController
       $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
       $offset = ($page - 1) * $limit;
 
+      $filters = [
+        'search' => !empty($_GET['search']) ? $_GET['search'] : null,
+        'status' => !empty($_GET['status']) ? $_GET['status'] : null,
+        'commented' => isset($_GET['commented']) && $_GET['commented'] !== '' ? $_GET['commented'] : null,
+      ];
+
       $project = new Project();
       $projectDetail = new ProjectDetail();
       $projectNotif = new ProjectNotification();
 
-      $totalProjects = count($project->findByUserId($userId));
-      $projectList = $project->allPaginatedUserId($userId, $limit, $offset);
+      $totalProjects = $project->countByUserIdWithFilters($userId, $filters);
+      $projectList = $project->allPaginatedUserId($userId, $limit, $offset, $filters);
 
       foreach ($projectList as &$projectItem) {
         $lastComment = $projectDetail->findByProject($projectItem['id']);
@@ -35,10 +41,12 @@ class ProjectsController
       view('pages/mandor/projects/index', [
         'projectList' => $projectList,
         'currentPage' => $page,
-        'totalPages' => $totalPages
+        'totalPages' => $totalPages,
+        'filters' => $filters,
+        'offset' => $offset,
       ]);
     } catch (Exception $e) {
-      $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Terjadi kesalahan saat memuat data proyek.'];
+      $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Terjadi kesalahan saat memuat data proyek.' . $e];
       redirect('/mandor/dashboard');
     }
   }

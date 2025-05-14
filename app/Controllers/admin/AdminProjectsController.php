@@ -47,6 +47,7 @@ class AdminProjectsController
         'totalPages' => $totalPages,
         'search' => $filters['search'],
         'status' => $filters['status'],
+        'offset' => $offset,
       ]);
     } catch (Exception $e) {
       $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Terjadi kesalahan saat memuat data proyek.'];

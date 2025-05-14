@@ -56,7 +56,7 @@
       <?php else: ?>
         <?php foreach ($projectList as $index => $project): ?>
           <tr>
-            <td><?= $index + 1 ?></td>
+            <td><?= $offset + $index + 1 ?></td>
             <td><?= htmlspecialchars($project['project_name']) ?></td>
             <td class="<?= empty($project['customer_name']) ? 'text-muted' : '' ?>">
               <?= !empty($project['customer_name']) ? htmlspecialchars($project['customer_name']) : 'Belum Diisi' ?>
@@ -82,16 +82,7 @@
     </tbody>
   </table>
 
-  <!-- Pagination -->
-  <nav>
-    <ul class="pagination">
-      <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
-          <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-        </li>
-      <?php endfor; ?>
-    </ul>
-  </nav>
+  <?php include __DIR__ . "/../../../components/pagination.php" ?>
 </div>
 
 <?php include __DIR__ . "/../../../components/modalDelete.php" ?>

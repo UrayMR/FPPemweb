@@ -110,7 +110,7 @@ function generateModalEdit($karyawan)
           $karyawan
         ): ?>
           <tr>
-            <td><?= $index + 1 ?></td>
+            <td><?= $offset + $index + 1 ?></td>
             <td><?= htmlspecialchars($karyawan['username']) ?></td>
             <td><?= htmlspecialchars($karyawan['phone_number']) ?></td>
             <td><?= ucfirst(htmlspecialchars($karyawan['role'])) ?></td>
@@ -136,16 +136,7 @@ function generateModalEdit($karyawan)
     </tbody>
   </table>
 
-  <!-- Pagination -->
-  <nav>
-    <ul class="pagination">
-      <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
-          <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-        </li>
-      <?php endfor; ?>
-    </ul>
-  </nav>
+  <?php include __DIR__ . "/../../../components/pagination.php" ?>
 </div>
 
 <?php include __DIR__ . "/../../../components/modalForm.php" ?>

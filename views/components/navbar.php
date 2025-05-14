@@ -20,22 +20,31 @@ if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'mandor') {
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <?php
+        $uri = $_SERVER['REQUEST_URI'];
+        function isActive($path)
+        {
+          return strpos($_SERVER['REQUEST_URI'], $path) === 0 ? 'active' : '';
+        }
+        ?>
+
         <?php if ($_SESSION['user']['role'] === 'admin'): ?>
           <li class="nav-item">
-            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/dashboard') ? 'active' : '' ?>" href="/admin/dashboard">Dashboard</a>
+            <a class="nav-link <?= isActive('/admin/dashboard') ?>" href="/admin/dashboard">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/karyawan') ? 'active' : '' ?>" href="/admin/karyawan">Karyawan</a>
+            <a class="nav-link <?= isActive('/admin/karyawan') ?>" href="/admin/karyawan">Karyawan</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/admin/projects') ? 'active' : '' ?>" href="/admin/projects">Proyek</a>
+            <a class="nav-link <?= isActive('/admin/projects') ?>" href="/admin/projects">Proyek</a>
           </li>
+
         <?php elseif ($_SESSION['user']['role'] === 'mandor'): ?>
           <li class="nav-item">
-            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/mandor/dashboard') ? 'active' : '' ?>" href="/mandor/dashboard">Dashboard</a>
+            <a class="nav-link <?= isActive('/mandor/dashboard') ?>" href="/mandor/dashboard">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link <?= ($_SERVER['REQUEST_URI'] == '/mandor/projects') ? 'active' : '' ?>" href="/mandor/projects">Proyek</a>
+            <a class="nav-link <?= isActive('/mandor/projects') ?>" href="/mandor/projects">Proyek</a>
           </li>
         <?php endif; ?>
       </ul>

@@ -53,14 +53,53 @@
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mt-3">
       <p class="h4 mb-3">List Proyek</p>
+    </div>
 
-      <button
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        data-bs-target="#formModal"
-        onclick="openDynamicFormModal(<?= htmlspecialchars(json_encode($modalCreate), ENT_QUOTES, 'UTF-8') ?>)">
-        + Tambah Proyek
-      </button>
+    <div class="row align-items-center mb-3 gx-2 gy-2">
+      <div class="col-auto">
+        <form method="GET" class="row gx-2 gy-2 align-items-center">
+          <div class="col-auto">
+            <input
+              type="text"
+              name="search"
+              class="form-control"
+              placeholder="Cari Proyek atau Pelanggan"
+              value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+          </div>
+          <div class="col-auto">
+            <select name="status" class="form-select">
+              <option value="">Semua Status</option>
+              <option value="install" <?= (($_GET['status'] ?? '') === 'install') ? 'selected' : '' ?>>Install</option>
+              <option value="non-install" <?= (($_GET['status'] ?? '') === 'non-install') ? 'selected' : '' ?>>Non-install</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <select name="commented" class="form-select">
+              <option value="">Semua Komentar</option>
+              <option value="1" <?= (($_GET['commented'] ?? '') === '1') ? 'selected' : '' ?>>Sudah Diberi Komentar</option>
+              <option value="0" <?= (($_GET['commented'] ?? '') === '0') ? 'selected' : '' ?>>Belum Diberi Komentar</option>
+            </select>
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-outline-primary">Filter</button>
+          </div>
+          <?php if (!empty($_GET['search']) || !empty($_GET['status']) || !empty($_GET['commented'])): ?>
+            <div class="col-auto">
+              <a href="/mandor/projects" class="btn btn-outline-secondary">Reset</a>
+            </div>
+          <?php endif; ?>
+        </form>
+      </div>
+
+      <div class="col-auto ms-auto">
+        <button
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#formModal"
+          onclick="openDynamicFormModal(<?= htmlspecialchars(json_encode($modalCreate), ENT_QUOTES, 'UTF-8') ?>)">
+          + Tambah Proyek
+        </button>
+      </div>
     </div>
 
     <?php include __DIR__ . "/../../../components/alert.php" ?>
@@ -86,7 +125,7 @@
           <?php foreach ($projectList as $index => $project): ?>
             <tr>
               <td rowspan="<?= empty($project['last_comment']) || !$project['notif_unread'] ? 1 : 2 ?>">
-                <?= $index + 1 ?>
+                <?= $offset + $index + 1 ?>
               </td>
               <td><?= htmlspecialchars($project['project_name']) ?></td>
               <td class="<?= empty($project['customer_name']) ? 'text-muted' : '' ?>">
@@ -169,16 +208,7 @@
       </tbody>
     </table>
 
-    <!-- Pagination -->
-    <nav>
-      <ul class="pagination">
-        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-          <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>">
-            <a class="page-link" href="?page=<?= $i ?>"><?= $i ?></a>
-          </li>
-        <?php endfor; ?>
-      </ul>
-    </nav>
+    <?php include __DIR__ . "/../../../components/pagination.php" ?>
   </div>
 
   <?php include __DIR__ . "/../../../components/modalForm.php" ?>
