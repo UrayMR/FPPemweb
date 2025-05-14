@@ -45,14 +45,46 @@ function generateModalEdit($karyawan)
 <div class="container">
   <div class="d-flex justify-content-between align-items-center mt-3">
     <p class="h4 mb-3">List Karyawan</p>
+  </div>
 
-    <button
-      class="btn btn-primary"
-      data-bs-toggle="modal"
-      data-bs-target="#formModal"
-      onclick="openDynamicFormModal(<?= htmlspecialchars(json_encode($modalCreate), ENT_QUOTES, 'UTF-8') ?>)">
-      + Tambah User
-    </button>
+  <div class="row align-items-center mb-3 gx-2 gy-2">
+    <div class="col-auto">
+      <form method="GET" class="row gx-2 gy-2 align-items-center">
+        <div class="col-auto">
+          <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Cari Karyawan"
+            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+        </div>
+        <div class="col-auto">
+          <select name="role" class="form-select">
+            <option value="">Semua Role</option>
+            <option value="admin" <?= (($_GET['role'] ?? '') === 'admin') ? 'selected' : '' ?>>Admin</option>
+            <option value="mandor" <?= (($_GET['role'] ?? '') === 'mandor') ? 'selected' : '' ?>>Mandor</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-outline-primary">Filter</button>
+        </div>
+        <?php if (!empty($_GET['search']) || !empty($_GET['role'])): ?>
+          <div class="col-auto">
+            <a href="/admin/karyawan" class="btn btn-outline-secondary">Reset</a>
+          </div>
+        <?php endif; ?>
+      </form>
+    </div>
+
+    <div class="col-auto ms-auto">
+      <button
+        class="btn btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#formModal"
+        onclick="openDynamicFormModal(<?= htmlspecialchars(json_encode($modalCreate), ENT_QUOTES, 'UTF-8') ?>)">
+        + Tambah User
+      </button>
+    </div>
   </div>
 
   <?php include __DIR__ . "/../../../components/alert.php" ?>
@@ -81,7 +113,7 @@ function generateModalEdit($karyawan)
             <td><?= $index + 1 ?></td>
             <td><?= htmlspecialchars($karyawan['username']) ?></td>
             <td><?= htmlspecialchars($karyawan['phone_number']) ?></td>
-            <td><?= htmlspecialchars($karyawan['role']) ?></td>
+            <td><?= ucfirst(htmlspecialchars($karyawan['role'])) ?></td>
             <td>
               <a href="#"
                 class="btn btn-warning btn-sm"

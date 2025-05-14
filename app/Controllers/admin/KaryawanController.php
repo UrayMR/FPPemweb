@@ -8,19 +8,29 @@ class KaryawanController
   {
     try {
       $limit = 5;
-      $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+      $page = isset($_GET['page']) && is_numeric($_GET['page']) && $_GET['page'] > 0 ? (int)$_GET['page'] : 1;
       $offset = ($page - 1) * $limit;
 
-      $user = new User();
-      $totalUser = $user->total();
-      $karyawanList = $user->allPaginated($limit, $offset);
+      // Ambil filter dari query string
+      $filters = [
+        'search' => $_GET['search'] ?? '',
+        'role' => $_GET['role'] ?? ''
+      ];
 
-      $totalPages = ceil($totalUser / $limit);
+      $user = new User();
+
+      // Kirim filters ke model
+      $totalUser = $user->total($filters);
+      $karyawanList = $user->allPaginated($limit, $offset, $filters);
+
+      $totalPages = max(ceil($totalUser / $limit), 1); // supaya tidak 0 halaman
 
       view('pages/admin/karyawan/index', [
         'karyawanList' => $karyawanList,
         'currentPage' => $page,
-        'totalPages' => $totalPages
+        'totalPages' => $totalPages,
+        'search' => $filters['search'],
+        'role' => $filters['role'],
       ]);
     } catch (Exception $e) {
       $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Terjadi kesalahan saat memuat data karyawan.'];

@@ -49,21 +49,62 @@ class User
    * -----------------------
    */
 
-  public function total()
+  public function total($filters = [])
   {
-    $stmt = $this->db->query("SELECT COUNT(*) FROM users");
-    return (int)$stmt->fetchColumn();
+    $sql = "SELECT COUNT(*) FROM users";
+    $conditions = [];
+    $params = [];
+
+    if (!empty($filters['search'])) {
+      $conditions[] = "(username LIKE :search OR phone_number LIKE :search)";
+      $params[':search'] = '%' . $filters['search'] . '%';
+    }
+
+    if (!empty($filters['role']) && in_array($filters['role'], ['admin', 'mandor'])) {
+      $conditions[] = "role = :role";
+      $params[':role'] = $filters['role'];
+    }
+
+    if (!empty($conditions)) {
+      $sql .= ' WHERE ' . implode(' AND ', $conditions);
+    }
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
+    return (int) $stmt->fetchColumn();
   }
 
-  public function allPaginated($limit, $offset)
+  public function allPaginated($limit, $offset, $filters = [])
   {
-    $limit = (int)$limit;
-    $offset = (int)$offset;
+    $sql = "SELECT * FROM users";
+    $conditions = [];
+    $params = [];
 
-    $query = "SELECT * FROM users ORDER BY id DESC LIMIT $limit OFFSET $offset";
-    $stmt = $this->db->prepare($query);
+    if (!empty($filters['search'])) {
+      $conditions[] = "(username LIKE :search OR phone_number LIKE :search)";
+      $params[':search'] = '%' . $filters['search'] . '%';
+    }
+
+    if (!empty($filters['role']) && in_array($filters['role'], ['admin', 'mandor'])) {
+      $conditions[] = "role = :role";
+      $params[':role'] = $filters['role'];
+    }
+
+    if (!empty($conditions)) {
+      $sql .= ' WHERE ' . implode(' AND ', $conditions);
+    }
+
+    $sql .= " ORDER BY id DESC LIMIT :limit OFFSET :offset";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+    foreach ($params as $key => $value) {
+      $stmt->bindValue($key, $value);
+    }
+
     $stmt->execute();
-
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 

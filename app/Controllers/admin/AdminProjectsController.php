@@ -14,12 +14,21 @@ class AdminProjectsController
       $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
       $offset = ($page - 1) * $limit;
 
+      // Ambil filter dari query string
+      $filters = [
+        'search' => $_GET['search'] ?? '',
+        'status' => $_GET['status'] ?? '',
+      ];
+
       $project = new Project();
       $projectDetail = new ProjectDetail();
       $projectNotification = new ProjectNotification();
 
-      $totalProjects = $project->total();
-      $projectList = $project->allPaginated($limit, $offset);
+      // Kirim filters ke model untuk total proyek
+      $totalProjects = $project->total($filters);
+
+      // Kirim filters ke model untuk mengambil proyek terpaginasikan
+      $projectList = $project->allPaginated($limit, $offset, $filters);
 
       foreach ($projectList as &$projectItem) {
         $lastComment = $projectDetail->findByProject($projectItem['id']);
@@ -35,14 +44,15 @@ class AdminProjectsController
       view('pages/admin/projects/index', [
         'projectList' => $projectList,
         'currentPage' => $page,
-        'totalPages' => $totalPages
+        'totalPages' => $totalPages,
+        'search' => $filters['search'],
+        'status' => $filters['status'],
       ]);
     } catch (Exception $e) {
       $_SESSION['alert'] = ['type' => 'danger', 'message' => 'Terjadi kesalahan saat memuat data proyek.'];
       redirect('/admin/dashboard');
     }
   }
-
   public static function comment($project_id)
   {
     try {

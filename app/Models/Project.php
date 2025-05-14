@@ -35,21 +35,67 @@ class Project
    * -----------------------
    */
 
-  public function total()
+  public function total($filters = [])
   {
-    $stmt = $this->db->query("SELECT COUNT(*) FROM projects");
-    return (int)$stmt->fetchColumn();
+    $sql = "SELECT COUNT(*) FROM projects";
+    $conditions = [];
+    $params = [];
+
+    // Cek filter search untuk project_name atau customer_name
+    if (!empty($filters['search'])) {
+      $conditions[] = "(project_name LIKE :search OR customer_name LIKE :search)";
+      $params[':search'] = '%' . $filters['search'] . '%';
+    }
+
+    // Cek status jika ada
+    if (!empty($filters['status'])) {
+      $conditions[] = "status = :status";
+      $params[':status'] = $filters['status'];
+    }
+
+    if (!empty($conditions)) {
+      $sql .= ' WHERE ' . implode(' AND ', $conditions);
+    }
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->execute($params);
+    return (int) $stmt->fetchColumn();
   }
 
-  public function allPaginated($limit, $offset)
+  public function allPaginated($limit, $offset, $filters = [])
   {
-    $limit = (int)$limit;
-    $offset = (int)$offset;
+    $sql = "SELECT * FROM projects";
+    $conditions = [];
+    $params = [];
 
-    $query = "SELECT * FROM projects ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
-    $stmt = $this->db->prepare($query);
+    // Cek filter search untuk project_name atau customer_name
+    if (!empty($filters['search'])) {
+      $conditions[] = "(project_name LIKE :search OR customer_name LIKE :search)";
+      $params[':search'] = '%' . $filters['search'] . '%';
+    }
+
+    // Cek status jika ada
+    if (!empty($filters['status'])) {
+      $conditions[] = "status = :status";
+      $params[':status'] = $filters['status'];
+    }
+
+    if (!empty($conditions)) {
+      $sql .= ' WHERE ' . implode(' AND ', $conditions);
+    }
+
+    $sql .= " ORDER BY id DESC LIMIT :limit OFFSET :offset";
+
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+
+    // Binding parameters
+    foreach ($params as $key => $value) {
+      $stmt->bindValue($key, $value);
+    }
+
     $stmt->execute();
-
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 

@@ -3,6 +3,37 @@
     <p class="h4 mb-3">List Proyek</p>
   </div>
 
+  <div class="row align-items-center mb-3 gx-2 gy-2">
+    <div class="col-auto">
+      <form method="GET" class="row gx-2 gy-2 align-items-center">
+        <div class="col-auto">
+          <input
+            type="text"
+            name="search"
+            class="form-control"
+            placeholder="Cari Proyek atau Pelanggan"
+            value="<?= htmlspecialchars($_GET['search'] ?? '') ?>">
+        </div>
+        <div class="col-auto">
+          <select name="status" class="form-select">
+            <option value="">Semua Status</option>
+            <option value="install" <?= (($_GET['status'] ?? '') === 'install') ? 'selected' : '' ?>>Install</option>
+            <option value="non-install" <?= (($_GET['status'] ?? '') === 'non-install') ? 'selected' : '' ?>>Non-install</option>
+          </select>
+        </div>
+        <div class="col-auto">
+          <button type="submit" class="btn btn-outline-primary">Filter</button>
+        </div>
+        <?php if (!empty($_GET['search']) || !empty($_GET['status'])): ?>
+          <div class="col-auto">
+            <a href="/admin/projects" class="btn btn-outline-secondary">Reset</a>
+          </div>
+        <?php endif; ?>
+      </form>
+    </div>
+  </div>
+
+
   <?php include __DIR__ . "/../../../components/alert.php" ?>
 
   <table class="table table-bordered mt-2">
