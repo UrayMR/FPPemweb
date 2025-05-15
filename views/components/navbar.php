@@ -10,6 +10,36 @@ if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'mandor') {
 }
 ?>
 
+<style>
+  .hover-bg {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    border-radius: 5px;
+  }
+
+  .hover-bg:hover {
+    background-color: #495057;
+  }
+
+  .hover-bg:hover .fw-semibold {
+    color: #ffffff;
+  }
+
+  .hover-bg:hover small.text-muted {
+    color: #e0e0e0;
+  }
+
+  .bi-bell {
+    transition: color 0.3s ease;
+    color: white;
+  }
+
+  .bi-bell:hover {
+    color: #ffc107;
+    /* kuning Bootstrap */
+  }
+</style>
+
+
 <nav class="navbar navbar-expand-lg bg-body-tertiary sticky" data-bs-theme="dark" style="position: sticky; top: 0; z-index: 999;">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">CV Mentari Pagi Engineering</a>
@@ -54,7 +84,7 @@ if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'mandor') {
           <?php $unreadCount = count($notifList); ?>
           <div class="nav-item dropdown me-3">
             <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-bell fs-4" style="color: white;"></i>
+              <i class="bi bi-bell fs-4"></i>
               <?php if ($unreadCount > 0): ?>
                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                   <?= $unreadCount ?>
@@ -68,11 +98,13 @@ if (isset($_SESSION['user']) && $_SESSION['user']['role'] === 'mandor') {
                 <li><span class="dropdown-item text-muted">Tidak ada notifikasi baru</span></li>
               <?php else: ?>
                 <?php foreach ($notifList as $notif): ?>
-                  <li class="d-flex justify-content-between align-items-center mb-2 px-2">
-                    <div>
-                      <div class="fw-semibold"><?= htmlspecialchars($notif['project_name']) ?></div>
-                      <small class="text-muted">Komentar baru dari admin</small>
-                    </div>
+                  <li class="d-flex justify-content-between align-items-center mb-2 px-2 hover-bg">
+                    <a href="/mandor/projects?search=<?= urlencode($notif['project_name']) ?>&commented=1" class="text-decoration-none flex-grow-1">
+                      <div>
+                        <div class="fw-semibold text-light"><?= ucfirst(htmlspecialchars($notif['project_name'])) ?></div>
+                        <small class="text-muted">Komentar baru dari admin</small>
+                      </div>
+                    </a>
                     <form method="POST" action="/mandor/projects/read/<?= $notif['project_id'] ?>">
                       <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                       <button class="btn btn-sm btn-outline-success ms-2">Tandai telah dibaca</button>
