@@ -17,11 +17,16 @@
         <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
         <div class="mb-3">
           <label class="form-label">Username</label>
-          <input type="text" name="username" class="form-control" required>
+          <div class="input-group">
+            <span class="input-group-text><i class="bi bi-person-fill"></i></span>
+            <input type="text" name="username" class="form-control" required placeholder="Masukkan username">
         </div>
         <div class="mb-3">
-          <label class="form-label">Number Phone</label>
-          <input type="text" name="phone_number" class="form-control" required pattern="\d+">
+          <label class="form-label">Nomor HP</label>
+        <div class="input-group">
+         <span class="input-group-text"><i class="bi bi-telephone-fill"></i></span>
+          <input type="text" name="phone_number" class="form-control" required pattern="\d+" placeholder="Masukkan nomor telepon">
+        </div>
         </div>
         <div class="mt-4">
           <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>

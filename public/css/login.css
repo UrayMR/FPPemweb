@@ -1,0 +1,107 @@
+/* login.css */
+
+html {
+  --primary-color: #1f3c88;
+  --accent-color: #f9a826;
+  --bg-gradient: linear-gradient(to right, #1f3c88, #2a5298);
+  --text-color: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --input-bg: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background: var(--bg-gradient);
+  color: var(--text-color);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  transition: background 0.5s ease;
+}
+
+.card {
+  width: 30rem;
+  background-color: var(--card-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 1s ease-in-out;
+  padding: 1.5rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card-title {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+label {
+  color: var(--text-color);
+}
+
+.input-group-text {
+  background-color: var(--input-bg);
+  border: none;
+  color: var(--text-color);
+}
+
+.form-control {
+  background-color: var(--input-bg);
+  border: 1px solid #ffffff33;
+  color: var(--text-color);
+  transition: 0.3s;
+}
+
+.form-control::placeholder {
+  color: #ffffffaa;
+}
+
+.form-control:focus {
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 0.2rem rgba(249, 168, 38, 0.25);
+}
+
+.btn-primary {
+  background-color: var(--accent-color);
+  border-color: var(--accent-color);
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #e68a00;
+  border-color: #e68a00;
+}
+
+.toggle-dark-mode {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Dark Mode */
+html.dark {
+  --bg-gradient: linear-gradient(to right, #121212, #1c1c1c);
+  --card-bg: rgba(0, 0, 0, 0.5);
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --text-color: #ffffff;
+}
