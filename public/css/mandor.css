@@ -1,3 +1,26 @@
-.container-fluid {
-background-color: #1f3c88; 
+body {
+    background-image: url('/images/proyek2.jpg');
+    background-size: cover;
+    height: 200px;
+    
+}
+
+h1 {
+    top: 0;
+    left: 0;
+    z-index: 1;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
+}
+
+h2 {
+    top: 0;
+    left: 0;
+    z-index: 1;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px black;
 }
