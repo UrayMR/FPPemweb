@@ -120,7 +120,7 @@
                             <p class="text wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.8s">
                                 Kosultasikan kebutuhan Anda bersama Kami. Kami juga sangat terbuka dengan setiap kritik dan saran yang Anda berikan Sumber Daya yang profesional
                             </p>
-                            <a href="https://wa.link/v4kyf3" class="main-btn wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1.1s" target="_blank">
+                            <a href="" class="main-btn wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="1.1s" target="_blank">
                                 Reserve Now
                             </a>
                         </div>
