@@ -1,8 +1,9 @@
-body {
+.header-bg {
     background-image: url('/images/proyek2.jpg');
     background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
     height: 200px;
-    
 }
 
 h1 {
