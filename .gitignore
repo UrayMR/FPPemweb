@@ -1,1 +1,9 @@
 .env
+/vendor/
+/composer.lock
+/node_modules/
+/.idea/
+/.vscode/
+*.log
+.DS_Store
+Thumbs.db
