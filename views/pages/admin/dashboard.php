@@ -3,12 +3,12 @@
 
 <div class="card">
   <h3><i class="bi bi-briefcase icon"></i> Proyek Aktif</h3>
-  <p>Anda sedang mengawasi 4 proyek aktif hari ini.</p>
-  <a href="/proyek" class="btn">Lihat Detail</a>
+  <p>Anda sedang mengawasi proyek mandor</p>
+  <a href="/admin/projects" class="btn">Lihat Detail</a>
 </div>
 
 <div class="card">
   <h3><i class="bi bi-people icon"></i> Tenaga Kerja</h3>
-  <p>15 pekerja aktif terdaftar di lapangan.</p>
+  <p>3 pekerja aktif terdaftar di lapangan.</p>
 </div>
 <link rel="stylesheet" href="/css/admin.css"/>

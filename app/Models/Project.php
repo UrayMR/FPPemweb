@@ -62,6 +62,19 @@ class Project
     return (int) $stmt->fetchColumn();
   }
 
+  public function all()
+  {
+    $stmt = $this->db->query("SELECT * FROM projects ORDER BY id ASC");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function findByNameAndCustomer($project_name, $customer_name)
+  {
+    $stmt = $this->db->prepare("SELECT * FROM projects WHERE project_name = ? AND customer_name = ?");
+    $stmt->execute([$project_name, $customer_name]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+  }
+
   public function allPaginated($limit, $offset, $filters = [])
   {
     $sql = "SELECT * FROM projects";
