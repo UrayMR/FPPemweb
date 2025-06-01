@@ -1,5 +1,3 @@
-/* login.css */
-
 html {
   --primary-color: #1f3c88;
   --accent-color: #f9a826;
@@ -98,7 +96,7 @@ label {
   cursor: pointer;
 }
 
-/* Dark Mode */
+/* mode dark*/
 html.dark {
   --bg-gradient: linear-gradient(to right, #121212, #1c1c1c);
   --card-bg: rgba(0, 0, 0, 0.5);
