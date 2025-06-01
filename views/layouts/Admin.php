@@ -11,6 +11,7 @@
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.min.css" />
+
   <style>
     main {
       padding: 20px;
