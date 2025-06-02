@@ -1,7 +1,7 @@
 # Final Project Pemrograman Web
 
 ## Deskripsi
-Tetap Semangat, Bambang Supratman
+Tetap Semangat
 1. Uray (Hadir)
 2. Jauhari (Hadir)
 3. Amelia (Hadir)
