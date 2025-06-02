@@ -10,10 +10,14 @@
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="/css/projects admin.css">
+
+
   <style>
     main {
       padding: 20px;
     }
+
   </style>
 </head>
 
@@ -29,5 +33,4 @@
     integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO"
     crossorigin="anonymous"></script>
 </body>
-
 </html>
