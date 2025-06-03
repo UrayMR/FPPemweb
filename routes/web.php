@@ -77,6 +77,16 @@ Router::post('/admin/karyawan/update/{id}', function ($id) {
   KaryawanController::update($id);
 });
 
+Router::post('/admin/karyawan/export', function () {
+  Middleware::role('admin');
+  KaryawanController::export();
+});
+
+Router::post('/admin/karyawan/import', function () {
+  Middleware::role('admin');
+  KaryawanController::import();
+});
+
 Router::get('/admin/projects', function () {
   Middleware::role('admin'); // Pastikan hanya admin yang bisa mengakses
   AdminProjectsController::index();
@@ -85,6 +95,18 @@ Router::get('/admin/projects', function () {
 Router::post('/admin/projects/comment/{id}', function ($id) {
   Middleware::role('admin'); // Pastikan hanya admin yang bisa mengakses
   AdminProjectsController::comment($id);
+});
+
+Router::post('/admin/projects/export', function () {
+  Middleware::role('admin');
+  verifyCsrfToken($_POST['csrf_token']);
+  AdminProjectsController::export();
+});
+
+Router::post('/admin/projects/import', function () {
+  Middleware::role('admin');
+  verifyCsrfToken($_POST['csrf_token']);
+  AdminProjectsController::import();
 });
 
 /**

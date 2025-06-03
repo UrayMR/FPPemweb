@@ -74,6 +74,12 @@ class User
     return (int) $stmt->fetchColumn();
   }
 
+  public function all()
+  {
+    $stmt = $this->db->query("SELECT * FROM users ORDER BY id ASC");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
   public function allPaginated($limit, $offset, $filters = [])
   {
     $sql = "SELECT * FROM users";

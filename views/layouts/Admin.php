@@ -4,14 +4,18 @@
 <head>
   <meta charset="UTF-8" />
   <title>Admin Panel | CV Mentari Pagi Engineering</title>
+  <link rel="icon" href="/images/mentari.png" type="image/png" />
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.min.css" />
+<<<<<<< HEAD
   <link rel="stylesheet" href="/css/projects admin.css">
 
+=======
+>>>>>>> 57211f4c6f2b716f6bb658414913aa58650c266d
 
   <style>
     main {

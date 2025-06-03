@@ -48,13 +48,13 @@
       'data' => $project
     ];
   }
+  
   ?>
 
   <div class="container">
     <div class="d-flex justify-content-between align-items-center mt-3">
       <p class="h4 mb-3">List Proyek</p>
     </div>
-
     <div class="row align-items-center mb-3 gx-2 gy-2">
       <div class="col-auto">
         <form method="GET" class="row gx-2 gy-2 align-items-center">
@@ -207,7 +207,6 @@
         <?php endif; ?>
       </tbody>
     </table>
-
     <?php include __DIR__ . "/../../../components/pagination.php" ?>
   </div>
 

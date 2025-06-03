@@ -76,7 +76,12 @@ function generateModalEdit($karyawan)
       </form>
     </div>
 
-    <div class="col-auto ms-auto">
+    <div class="col-auto ms-auto d-flex gap-3">
+      <form method="POST" action="/admin/karyawan/export" class="d-inline">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
+        <button type="submit" class="btn btn-success">Ekspor Excel</button>
+      </form>
+      <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#importKaryawanModal">Impor Excel</button>
       <button
         class="btn btn-primary"
         data-bs-toggle="modal"
@@ -141,3 +146,22 @@ function generateModalEdit($karyawan)
 
 <?php include __DIR__ . "/../../../components/modalForm.php" ?>
 <?php include __DIR__ . "/../../../components/modalDelete.php" ?>
+
+<!-- Modal Impor -->
+<div class="modal fade" id="importKaryawanModal" tabindex="-1" aria-labelledby="importKaryawanModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="/admin/karyawan/import" enctype="multipart/form-data" class="modal-content">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importKaryawanModalLabel">Impor Karyawan dari Excel/CSV</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="file" name="excel_file" accept=".xls,.xlsx,.csv" class="form-control" required>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Impor</button>
+      </div>
+    </form>
+  </div>
+</div>

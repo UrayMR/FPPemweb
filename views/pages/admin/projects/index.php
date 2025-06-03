@@ -31,6 +31,13 @@
         <?php endif; ?>
       </form>
     </div>
+    <div class="col-auto ms-auto d-flex gap-3">
+      <form method="POST" action="/admin/projects/export" class="d-inline">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
+        <button type="submit" class="btn btn-success">Ekspor Excel</button>
+      </form>
+      <button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#importProjectModal">Impor Excel</button>
+    </div>
   </div>
 
 
@@ -83,6 +90,25 @@
   </table>
 
   <?php include __DIR__ . "/../../../components/pagination.php" ?>
+</div>
+
+<!-- Modal Impor -->
+<div class="modal fade" id="importProjectModal" tabindex="-1" aria-labelledby="importProjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <form method="POST" action="/admin/projects/import" enctype="multipart/form-data" class="modal-content">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(generateCsrfToken()) ?>">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importProjectModalLabel">Impor Proyek dari Excel/CSV</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="file" name="excel_file" accept=".xls,.xlsx,.csv" class="form-control" required>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Impor</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <?php include __DIR__ . "/../../../components/modalDelete.php" ?>
