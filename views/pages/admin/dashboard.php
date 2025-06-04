@@ -7,7 +7,6 @@ loadEnv();
 $pdo = Connection::getInstance();
 $userId = $_SESSION['user']['id'] ?? null;
 
-// Chart proyek berdasarkan tanggal
 $stmt = $pdo->prepare("
     SELECT DATE(start_date) AS date, COUNT(*) AS total 
     FROM projects 
@@ -26,7 +25,6 @@ foreach ($chartData as $row) {
   $data[] = (int)$row['total'];
 }
 
-// Query untuk chart pelanggan
 $stmtCustomers = $pdo->prepare("
     SELECT customer_name, COUNT(*) AS total 
     FROM projects 
@@ -48,117 +46,68 @@ foreach ($customerData as $row) {
 }
 ?>
 
-<div class="container mt-5">
-  <h2 class="mb-4">Dashboard Proyek</h2>
+<style>
+  body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', sans-serif;
+  }
 
-  <!-- Chart Proyek per Tanggal -->
+  .icon {
+    margin-right: 8px;
+  }
+
+  .card {
+    border-radius: 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  }
+
+  .card h3,
+  .card h5,
+  .card h4 {
+    margin-bottom: 1rem;
+  }
+
+  .btn {
+    margin-top: 1rem;
+  }
+</style>
+
+<div class="card p-4">
+  <h4 class="mb-4">Dashboard Proyek</h4>
   <div class="row">
-    <div class="col-md-12">
-      <div class="card shadow-sm p-3">
-        <h5 class="card-title">Jumlah Proyek Berdasarkan Tanggal Mulai</h5>
-        <canvas id="projectChart" height="100"></canvas>
-      </div>
+    <div class="col-md-6">
+      <h5>Jumlah Proyek Berdasarkan Tanggal Mulai</h5>
+      <canvas id="projectChart"></canvas>
     </div>
-  </div>
-
-  <!-- Chart Pelanggan -->
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <div class="card shadow-sm p-3">
-        <h5 class="card-title">Persentase Proyek per Pelanggan</h5>
-        <div style="max-width: 400px; margin: auto;">
-          <canvas id="customerChart"></canvas>
-        </div>
-      </div>
+    <div class="col-md-6">
+      <h5>Persentase Proyek per Pelanggan</h5>
+      <canvas id="customerChart"></canvas>
     </div>
   </div>
 </div>
-
-<div class="card">
-  <h3><i class="bi bi-people icon"></i> Tenaga Kerja</h3>
-  <p>3 pekerja aktif terdaftar di lapangan.</p>
-</div>
-<link rel="stylesheet" href="/css/admin.css"/>
-
-<?php
-require_once __DIR__ . '/../../../core/env.php';
-require_once __DIR__ . '/../../../core/connection.php';
-
-loadEnv();
-
-$pdo = Connection::getInstance();
-$userId = $_SESSION['user']['id'] ?? null;
-
-// Chart proyek berdasarkan tanggal
-$stmt = $pdo->prepare("
-    SELECT DATE(start_date) AS date, COUNT(*) AS total 
-    FROM projects 
-    WHERE start_date IS NOT NULL AND user_id = :user_id
-    GROUP BY DATE(start_date)
-    ORDER BY DATE(start_date)
-");
-$stmt->execute(['user_id' => $userId]);
-$chartData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$labels = [];
-$data = [];
-
-foreach ($chartData as $row) {
-  $labels[] = date('d M', strtotime($row['date']));
-  $data[] = (int)$row['total'];
-}
-
-// Query untuk chart pelanggan
-$stmtCustomers = $pdo->prepare("
-    SELECT customer_name, COUNT(*) AS total 
-    FROM projects 
-    WHERE customer_name IS NOT NULL AND customer_name != '' AND user_id = :user_id
-    GROUP BY customer_name
-    ORDER BY total DESC
-");
-$stmtCustomers->execute(['user_id' => $userId]);
-$customerData = $stmtCustomers->fetchAll(PDO::FETCH_ASSOC);
-
-$totalProjects = array_sum(array_column($customerData, 'total'));
-
-$customerLabels = [];
-$customerPercentages = [];
-
-foreach ($customerData as $row) {
-  $customerLabels[] = $row['customer_name'];
-  $customerPercentages[] = round(($row['total'] / $totalProjects) * 100, 2);
-}
-?>
 
 <div class="container mt-5">
-  <h2 class="mb-4">Dashboard Proyek</h2>
+  <h1 class="fw-bold">Selamat Datang di Panel Pekerjaan</h1>
+  <h2 class="mb-4">Monitor aktivitas proyek dan tenaga kerja</h2>
 
-  <!-- Chart Proyek per Tanggal -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card shadow-sm p-3">
-        <h5 class="card-title">Jumlah Proyek Berdasarkan Tanggal Mulai</h5>
-        <canvas id="projectChart" height="100"></canvas>
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card p-4">
+        <h3><i class="bi bi-briefcase icon"></i> Proyek Aktif</h3>
+        <p>Anda sedang mengawasi proyek mandor.</p>
+        <a href="/admin/projects" class="btn btn-primary">Lihat Detail</a>
       </div>
     </div>
-  </div>
-
-  <!-- Chart Pelanggan -->
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <div class="card shadow-sm p-3">
-        <h5 class="card-title">Persentase Proyek per Pelanggan</h5>
-        <div style="max-width: 400px; margin: auto;">
-        <canvas id="customerChart"></canvas>
-        </div>
+    <div class="col-md-6">
+      <div class="card p-4">
+        <h3><i class="bi bi-people icon"></i> Tenaga Kerja</h3>
+        <p>3 pekerja aktif terdaftar di lapangan.</p>
       </div>
     </div>
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Chart proyek per tanggal
   const ctx = document.getElementById('projectChart').getContext('2d');
   new Chart(ctx, {
     type: 'bar',
@@ -185,7 +134,6 @@ foreach ($customerData as $row) {
     }
   });
 
-  // Chart pelanggan
   const ctx2 = document.getElementById('customerChart').getContext('2d');
   new Chart(ctx2, {
     type: 'pie',
