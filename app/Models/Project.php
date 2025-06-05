@@ -241,4 +241,90 @@ class Project
     $stmt = $this->db->prepare("DELETE FROM projects WHERE id = ?");
     return $stmt->execute([$id]);
   }
+
+  public function chartByMonthYear($userId = null)
+  {
+    if ($userId) {
+      $stmt = $this->db->prepare("
+        SELECT DATE_FORMAT(start_date, '%Y-%m') AS month, COUNT(*) AS total
+        FROM projects
+        WHERE start_date IS NOT NULL AND user_id = :user_id
+        GROUP BY month
+        ORDER BY month
+      ");
+      $stmt->execute(['user_id' => $userId]);
+    } else {
+      $stmt = $this->db->prepare("
+        SELECT DATE_FORMAT(start_date, '%Y-%m') AS month, COUNT(*) AS total
+        FROM projects
+        WHERE start_date IS NOT NULL
+        GROUP BY month
+        ORDER BY month
+      ");
+      $stmt->execute();
+    }
+    $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $data;
+  }
+
+  public function projectPercentageByMandor()
+  {
+    $stmt = $this->db->prepare("
+      SELECT u.username, COUNT(*) AS total
+      FROM projects p
+      JOIN users u ON p.user_id = u.id
+      WHERE p.user_id IS NOT NULL
+      GROUP BY u.username
+      ORDER BY total DESC
+    ");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Chart proyek per tanggal mulai untuk mandor tertentu
+  public function chartByDateForMandor($userId)
+  {
+    $stmt = $this->db->prepare("
+      SELECT DATE(start_date) AS date, COUNT(*) AS total
+      FROM projects
+      WHERE start_date IS NOT NULL AND user_id = :user_id
+      GROUP BY DATE(start_date)
+      ORDER BY DATE(start_date)
+    ");
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Persentase proyek per pelanggan untuk mandor tertentu
+  public function customerPercentageForMandor($userId)
+  {
+    $stmt = $this->db->prepare("
+      SELECT customer_name, COUNT(*) AS total
+      FROM projects
+      WHERE customer_name IS NOT NULL AND customer_name != '' AND user_id = :user_id
+      GROUP BY customer_name
+      ORDER BY total DESC
+    ");
+    $stmt->execute(['user_id' => $userId]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  // Total semua proyek yang diinisiasi oleh user (mandor)
+  public function totalByUser($userId)
+  {
+    $stmt = $this->db->prepare("SELECT COUNT(*) FROM projects WHERE user_id = :user_id");
+    $stmt->execute(['user_id' => $userId]);
+    return (int)$stmt->fetchColumn();
+  }
+
+  // Total proyek selesai (end_date < hari ini) milik user (mandor)
+  public function totalFinishedByUser($userId)
+  {
+    $stmt = $this->db->prepare("SELECT COUNT(*) FROM projects WHERE user_id = :user_id AND end_date IS NOT NULL AND end_date < :today");
+    $stmt->execute([
+      'user_id' => $userId,
+      'today' => date('Y-m-d')
+    ]);
+    return (int)$stmt->fetchColumn();
+  }
 }

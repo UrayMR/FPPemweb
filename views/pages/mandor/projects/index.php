@@ -48,11 +48,11 @@
       'data' => $project
     ];
   }
-  
+
   ?>
 
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center mt-3">
+  <div class="container p-4 bg-light rounded shadow-sm text-dark">
+    <div class="d-flex justify-content-between align-items-center">
       <p class="h4 mb-3">List Proyek</p>
     </div>
     <div class="row align-items-center mb-3 gx-2 gy-2">
@@ -190,7 +190,7 @@
                     </div>
                     <div class="modal-footer">
                       <?php if ($project['notif_unread'] && $project['notif_id']): ?>
-                        <form method="POST" action="/mandor/projects/read/<?= $project['notif_id'] ?>" style="margin-right: auto;">
+                        <form method="POST" action="/mandor/projects/read/<?= $project['id'] ?>" style="margin-right: auto;">
                           <input type="hidden" name="csrf_token" value="<?= generateCsrfToken() ?>">
                           <button type="submit" class="btn btn-success">Tandai Sudah Dibaca</button>
                         </form>

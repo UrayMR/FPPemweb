@@ -11,7 +11,7 @@
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.12.1/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="/css/projects admin.css">
+  <link rel="stylesheet" href="/css/admin.css">
 
   <style>
     main {

@@ -1,0 +1,109 @@
+/* Background keseluruhan halaman */
+body {
+  background: linear-gradient(to right, #1f3c88, #2a5298);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #212529;
+}
+
+/* Container utama */
+main {
+  padding: 20px;
+}
+
+/* Header halaman */
+.h4.mb-3 {
+  font-weight: 600;
+  color: #1f3c88;
+}
+
+/* Tabel proyek */
+.table {
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+table.table th {
+  background-color: #1f3c88;
+  color: #ffffff;
+}
+
+.table th,
+.table td {
+  vertical-align: middle;
+  padding: 12px 15px;
+}
+
+.table tbody tr:hover {
+  background-color: #eef3fb;
+}
+
+/* Badge status */
+.badge {
+  font-size: 0.85rem;
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+/* Input & Select styling */
+.form-select,
+.form-control {
+  border-radius: 6px;
+}
+
+/* Button & Modal styling */
+.btn-sm {
+  padding: 6px 10px;
+  font-size: 0.875rem;
+}
+
+.btn-primary {
+  background-color: #2a5298;
+  border-color: #2a5298;
+}
+
+.btn-primary:hover {
+  background-color: #1f3c88;
+  border-color: #1f3c88;
+}
+
+.modal .modal-header {
+  background-color: #2a5298;
+  color: white;
+}
+
+.modal .modal-footer .btn-success {
+  background-color: #2e7d32;
+  border: none;
+}
+
+.modal .modal-footer .btn-secondary {
+  background-color: #607d8b;
+  border: none;
+}
+
+form .btn-outline-primary {
+  border-color: #1f3c88;
+  color: #1f3c88;
+}
+
+form .btn-outline-primary:hover {
+  background-color: #1f3c88;
+  color: #fff;
+}
+
+form .btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+/* Pagination jika ada */
+.pagination .page-link {
+  color: white;
+}
+
+.pagination .page-link:hover {
+  background-color: #1f3c88;
+  color: white;
+}

@@ -24,8 +24,9 @@ Router::get('/', function () {
       redirect('/mandor/dashboard');
     }
   } else {
-    // Jika belum login, arahkan ke halaman login
-    redirect('/login');
+    // Jika belum login, tampilkan landing page
+    require_once __DIR__ . '/../views/pages/home.php';
+    exit;
   }
 });
 

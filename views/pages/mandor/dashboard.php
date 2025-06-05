@@ -1,73 +1,44 @@
-<?php
-require_once __DIR__ . '/../../../core/env.php';
-require_once __DIR__ . '/../../../core/connection.php';
+<div class="p-2 container">
+  <div class="row mb-4 g-4">
+    <div class="col-md-6">
+      <div class="card p-4 shadow-sm border-0 rounded-3 h-100 bg-white d-flex flex-row align-items-center justify-content-between">
+        <div>
+          <i class="bi bi-person-workspace display-4 text-info"></i>
+        </div>
+        <div class="text-end">
+          <span class="text-secondary mb-1 d-block">Total Proyek</span>
+          <h2 class="fw-bold text-primary mb-0" style="font-size:2.5rem;"><?= $totalProjects ?? 0 ?></h2>
+        </div>
+      </div>
+    </div>
 
-loadEnv();
-
-$pdo = Connection::getInstance();
-$userId = $_SESSION['user']['id'] ?? null;
-
-// Chart proyek berdasarkan tanggal
-$stmt = $pdo->prepare("
-    SELECT DATE(start_date) AS date, COUNT(*) AS total 
-    FROM projects 
-    WHERE start_date IS NOT NULL AND user_id = :user_id
-    GROUP BY DATE(start_date)
-    ORDER BY DATE(start_date)
-");
-$stmt->execute(['user_id' => $userId]);
-$chartData = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-$labels = [];
-$data = [];
-
-foreach ($chartData as $row) {
-  $labels[] = date('d M', strtotime($row['date']));
-  $data[] = (int)$row['total'];
-}
-
-// Query untuk chart pelanggan
-$stmtCustomers = $pdo->prepare("
-    SELECT customer_name, COUNT(*) AS total 
-    FROM projects 
-    WHERE customer_name IS NOT NULL AND customer_name != '' AND user_id = :user_id
-    GROUP BY customer_name
-    ORDER BY total DESC
-");
-$stmtCustomers->execute(['user_id' => $userId]);
-$customerData = $stmtCustomers->fetchAll(PDO::FETCH_ASSOC);
-
-$totalProjects = array_sum(array_column($customerData, 'total'));
-
-$customerLabels = [];
-$customerPercentages = [];
-
-foreach ($customerData as $row) {
-  $customerLabels[] = $row['customer_name'];
-  $customerPercentages[] = round(($row['total'] / $totalProjects) * 100, 2);
-}
-?>
-
-<div class="container mt-5">
-  <h2 class="mb-4">Dashboard Proyek</h2>
-
-  <!-- Chart Proyek per Tanggal -->
-  <div class="row">
-    <div class="col-md-12">
-      <div class="card shadow-sm p-3">
-        <h5 class="card-title">Jumlah Proyek Berdasarkan Tanggal Mulai</h5>
-        <canvas id="projectChart" height="100"></canvas>
+    <div class="col-md-6">
+      <div class="card p-4 shadow-sm border-0 rounded-3 h-100 bg-white d-flex flex-row align-items-center justify-content-between">
+        <div>
+          <i class="bi bi-archive-fill display-4 text-success"></i>
+        </div>
+        <div class="text-end">
+          <span class="text-secondary mb-1 d-block">Proyek Selesai</span>
+          <h2 class="fw-bold text-success mb-0" style="font-size:2.5rem;"><?= $totalFinishedProjects ?? 0 ?></h2>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Chart Pelanggan -->
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <div class="card shadow-sm p-3">
-        <h5 class="card-title">Persentase Proyek per Pelanggan</h5>
-        <div style="max-width: 400px; margin: auto;">
-        <canvas id="customerChart"></canvas>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm border-0 rounded-3 bg-white">
+        <h5 class="mb-3 text-primary text-center">Jumlah Proyek Berdasarkan Tanggal Mulai</h5>
+        <div>
+          <canvas id="projectChart"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card p-3 shadow-sm border-0 rounded-3 bg-white align-items-center">
+        <h5 class="mb-3 text-success text-center">Persentase Proyek per Pelanggan</h5>
+        <div>
+          <canvas id="customerChart"></canvas>
         </div>
       </div>
     </div>
@@ -85,15 +56,42 @@ foreach ($customerData as $row) {
       datasets: [{
         label: 'Jumlah Proyek',
         data: <?= json_encode($data) ?>,
-        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgba(54, 162, 235, 1)',
-        borderWidth: 1
+        borderWidth: 2,
+        borderRadius: 8,
+        maxBarThickness: 40
       }]
     },
     options: {
       responsive: true,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: '#fff',
+          titleColor: '#222',
+          bodyColor: '#222',
+          borderColor: '#36a2eb',
+          borderWidth: 1
+        }
+      },
       scales: {
-        y: { beginAtZero: true, ticks: { stepSize: 1 } }
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          },
+          grid: {
+            color: '#e0e7ff'
+          }
+        },
+        x: {
+          grid: {
+            color: '#f3f4f6'
+          }
+        }
       }
     }
   });
@@ -107,23 +105,39 @@ foreach ($customerData as $row) {
       datasets: [{
         data: <?= json_encode($customerPercentages) ?>,
         backgroundColor: [
-          'rgba(255, 99, 132, 0.7)',
-          'rgba(54, 162, 235, 0.7)',
-          'rgba(255, 206, 86, 0.7)',
-          'rgba(75, 192, 192, 0.7)',
-          'rgba(153, 102, 255, 0.7)',
-          'rgba(255, 159, 64, 0.7)',
-          'rgba(199, 199, 199, 0.7)',
-          'rgba(83, 102, 255, 0.7)',
-          'rgba(255, 102, 153, 0.7)',
-          'rgba(102, 255, 204, 0.7)'
-        ]
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(255, 159, 64, 0.6)',
+          'rgba(199, 199, 199, 0.6)',
+          'rgba(83, 102, 255, 0.6)',
+          'rgba(255, 102, 153, 0.6)',
+          'rgba(102, 255, 204, 0.6)'
+        ],
+        borderColor: '#fff',
+        borderWidth: 2
       }]
     },
     options: {
       responsive: true,
       plugins: {
+        legend: {
+          position: 'bottom',
+          labels: {
+            color: '#222',
+            font: {
+              size: 14
+            }
+          }
+        },
         tooltip: {
+          backgroundColor: '#fff',
+          titleColor: '#222',
+          bodyColor: '#222',
+          borderColor: '#22c55e',
+          borderWidth: 1,
           callbacks: {
             label: function(context) {
               return context.label + ': ' + context.parsed + '%';
